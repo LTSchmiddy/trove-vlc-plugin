@@ -3,7 +3,14 @@
 	"tasks": [
 		{
 			"label": "Copy VLC Lua",
-			"type":"shell",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"copy_vlc_lua.py"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/user"
+			}
 		},
 		{
 			"label": "Run VLC",
@@ -12,6 +19,21 @@
 			"options": {
 				"cwd": "${workspaceFolder}/vlc"
 			}
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build",
+			"command": "build",
+			"targets": [
+				"all"
+			],
+			"preset": "${command:cmake.activeBuildPresetName}",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"detail": "CMake template build task"
 		}
 	]
 }

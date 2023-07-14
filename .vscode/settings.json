@@ -1,6 +1,7 @@
 {
     "Lua.diagnostics.globals": [
         "vlc"
-    ]
+    ],
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 
 }

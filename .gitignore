@@ -1,5 +1,7 @@
 #Directories
 /build
+/cwd
+/user
 /vcpkg
 /vlc
 
