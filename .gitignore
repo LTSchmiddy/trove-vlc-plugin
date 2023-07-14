@@ -1,0 +1,9 @@
+#Directories
+/build
+/vcpkg
+/vlc
+
+# Files
+/CMakeUserPresets.json
+/mct_user_settings.json
+/mct_user_toolchain.cmake

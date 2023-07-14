@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Copy VLC Lua",
+			"type":"shell",
+		},
+		{
+			"label": "Run VLC",
+			"type": "process",
+			"command": "${workspaceFolder}/vlc/vlc.exe",
+			"options": {
+				"cwd": "${workspaceFolder}/vlc"
+			}
+		}
+	]
+}
