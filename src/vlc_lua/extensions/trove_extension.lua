@@ -7,6 +7,11 @@
 -- Mac:     /Applications/VLC/.../lua/extensions/basic.lua
 -- Linux:   ~/.local/share/vlc/lua/extensions/basic.lua
 
+io = require("io")
+
+
+app = nil
+
 function descriptor()
     return {
         title = "VLC Extension - Basic structure",
@@ -22,10 +27,18 @@ end
 function activate()
     -- this is where extension starts
     -- for example activation of extension opens custom dialog box:
-    create_dialog()
+    -- create_dialog()
+    vlc.msg.dbg("Opening Trove Manager...")
+    lc = require("luachild")
+ 
+    
+
 end
 function deactivate()
     -- what should be done on deactivation of extension
+    if app ~= nil then
+        app:close()
+    end
 end
 function close()
     -- function triggered on dialog box close event

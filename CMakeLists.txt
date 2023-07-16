@@ -8,7 +8,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF) 
 
 cmake_policy(SET CMP0076 NEW)
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 20)
 
 include_directories(${TRIPLET_INCLUDE_DIRS}) 
 
@@ -50,6 +50,10 @@ target_link_libraries(${TARGET_NAME} PRIVATE sol2)
 # Adding CxxOpts
 find_package(cxxopts CONFIG REQUIRED)
 target_link_libraries(${TARGET_NAME} PRIVATE cxxopts::cxxopts)
+
+# Adding Plog:
+find_package(plog CONFIG REQUIRED)
+target_link_libraries(${TARGET_NAME} PRIVATE plog::plog)
 
 # Adding sourcecode:
 include_directories("./src/cpp")

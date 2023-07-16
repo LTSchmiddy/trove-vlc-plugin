@@ -8,7 +8,9 @@
             "sqlite3[tool,zlib]",
             "lua[cpp]",
             "sol2",
-            "cxxopts"
+            "cxxopts",
+            "plog",
+            "curlpp"
         ]
     },
     "required_user_toolchain_values": [],

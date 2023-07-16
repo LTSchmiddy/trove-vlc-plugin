@@ -1,7 +1,13 @@
 {
     "Lua.diagnostics.globals": [
-        "vlc"
+        "vlc",
+        "msg"
     ],
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "files.associations": {
+        ".amp": "xml",
+        "coroutine": "cpp",
+        "format": "cpp"
+    }
 
 }

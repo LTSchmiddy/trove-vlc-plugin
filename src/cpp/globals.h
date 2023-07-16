@@ -1,5 +1,4 @@
-#include <imgui.h>
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_sdlrenderer2.h>
+#pragma once
 
-#include <SDL.h>
+#include "app_globals.h"
+#include "settings/settings_globals.h"
