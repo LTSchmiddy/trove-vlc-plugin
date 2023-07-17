@@ -30,6 +30,7 @@ namespace Settings{
         }
 
         // Loading settings category structs:
+        root_settings->scripts_path = root_settings_json["scripts_path"].get<std::string>();
     
     }
 
@@ -37,6 +38,7 @@ namespace Settings{
         json root_settings_json;
 
         // Generating Json for settings category structs:
+        root_settings_json["scripts_path"] = root_settings->scripts_path;
 
         std::ofstream out_file(file_path);
         out_file << root_settings_json.dump(4);

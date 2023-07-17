@@ -40,6 +40,10 @@ end
 function main()
     lazy_load()
 
+    -- local test_code = io.popen("test.exe", "r")
+    -- local result = test_code:read("*a")
+    -- vlc.msg.dbg(result)
+
     local f = io.open("hello.txt")
     vlc.msg.dbg(f:read("*a"))
 

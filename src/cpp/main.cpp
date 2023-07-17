@@ -8,6 +8,8 @@
 
 #include "logging.h"
 
+#define SETTINGS_PATH "settings.json"
+
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
@@ -15,7 +17,7 @@
 // Main code
 int main(int, char**)
 {
-    Settings::load_settings(&Global::settings, "settings.json");
+    Settings::load_settings(&Global::settings, SETTINGS_PATH);
 
     Logging::setup_logs();
 
@@ -85,7 +87,7 @@ int main(int, char**)
     // Main loop:
     while (!Global::App::should_terminate)
     {
-        Global::App::main_window->on_background();
+        Global::App::main_window->onBackground();
 
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -101,7 +103,7 @@ int main(int, char**)
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(Global::App::window))
                 Global::App::should_terminate = true;
 
-            Global::App::main_window->on_event(&event);
+            Global::App::main_window->onEvent(&event);
         }
 
         // Start the Dear ImGui frame
@@ -110,7 +112,7 @@ int main(int, char**)
         ImGui::NewFrame();
 
         UI::draw_menu_bar();
-        Global::App::main_window->on_draw();
+        Global::App::main_window->onDraw();
 
         // Rendering
         ImGui::Render();
@@ -131,7 +133,7 @@ int main(int, char**)
     SDL_DestroyWindow(Global::App::window);
     SDL_Quit();
 
-    Settings::save_settings(&Global::settings, "settings.json");
+    Settings::save_settings(&Global::settings, SETTINGS_PATH);
 
     return 0;
 }

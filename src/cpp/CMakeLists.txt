@@ -11,3 +11,4 @@ target_sources(${TARGET_NAME}
 
 add_subdirectory("./ui")
 add_subdirectory("./settings")
+add_subdirectory("./scripting")

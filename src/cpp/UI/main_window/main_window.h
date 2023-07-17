@@ -1,5 +1,6 @@
 #pragma once
 
+#include "fs.h"
 #include "gfx_headers.h"
 #include "ui/base/fragment.h"
 
@@ -19,6 +20,8 @@ namespace UI
         MainWindow();
         ~MainWindow();
 
-        void on_draw() override;
+        void onDraw() override;
+    private:
+        fs::path script_dir;
     };
 } // namespace UI

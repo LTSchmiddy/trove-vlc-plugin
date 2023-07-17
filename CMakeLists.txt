@@ -55,6 +55,10 @@ target_link_libraries(${TARGET_NAME} PRIVATE cxxopts::cxxopts)
 find_package(plog CONFIG REQUIRED)
 target_link_libraries(${TARGET_NAME} PRIVATE plog::plog)
 
+# Adding Curlpp:
+find_package(unofficial-curlpp CONFIG REQUIRED)
+target_link_libraries(${TARGET_NAME} PRIVATE unofficial::curlpp::curlpp)
+
 # Adding sourcecode:
 include_directories("./src/cpp")
 add_subdirectory("./src/cpp")

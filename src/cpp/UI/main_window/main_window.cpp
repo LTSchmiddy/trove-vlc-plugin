@@ -1,11 +1,16 @@
 #include "main_window.h"
-#include "app_globals.h"
+#include "globals.h"
 
+#include "scripting/scraper_script.h"
+
+namespace fs = fs;
 namespace UI {
-    MainWindow::MainWindow() { }
+    MainWindow::MainWindow() { 
+        script_dir = fs::path(Global::settings.scripts_path);
+    }
     MainWindow::~MainWindow() { }
 
-    void MainWindow::on_draw() {
+    void MainWindow::onDraw() {
 
         int res_x, res_y;
 
@@ -17,7 +22,12 @@ namespace UI {
         ImGui::SetNextWindowSize(menu_dimens);
         ImGui::Begin("primary_menu_window", NULL, flags);
         
-
+        for (const fs::directory_entry &entry : fs::directory_iterator(script_dir)) {
+            // ImGui::Text("%s", entry.path().string().c_str());
+            if (ImGui::Button(entry.path().string().c_str())) {
+                Scripting::ScraperScript script(entry.path());
+            }
+        }
         ImGui::End();
     }
 }
