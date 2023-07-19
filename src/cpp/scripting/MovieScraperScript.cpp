@@ -2,7 +2,7 @@
 #include <Plog/Log.h>
 #include <functional>
 
-#include "scraper_script.h"
+#include "MovieScraperScript.h"
 #include "extensions/lua_log.h"
 #include "extensions/lua_web_requests.h"
 #include "extensions/lua_json.h"
