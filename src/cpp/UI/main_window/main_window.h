@@ -4,6 +4,8 @@
 #include "gfx_headers.h"
 #include "ui/base/fragment.h"
 
+#include "scripting/scraper_script.h"
+
 namespace UI
 {
     class MainWindow : public Fragment {
@@ -23,5 +25,12 @@ namespace UI
         void onDraw() override;
     private:
         fs::path script_dir;
+        Scripting::ScraperScript* scraper = NULL;
+
+        std::string basicSearchParam;
+        std::string scrapOutput;
+
+        void drawQueryInterface();
+
     };
 } // namespace UI

@@ -5,22 +5,22 @@
 
 namespace Scripting::Extensions::Logging {
     
-    void _lua_log_verbose(std::string val) {
+    static void _lua_log_verbose(std::string val) {
         PLOGV << val;
     }
-    void _lua_log_debug(std::string val) {
+    static void _lua_log_debug(std::string val) {
         PLOGD << val;
     }
-    void _lua_log_info(std::string val) {
+    static void _lua_log_info(std::string val) {
         PLOGI << val;
     }
-    void _lua_log_warning(std::string val) {
+    static void _lua_log_warning(std::string val) {
         PLOGW << val;
     }
-    void _lua_log_error(std::string val) {
+    static void _lua_log_error(std::string val) {
         PLOGE << val;
     }
-    void _lua_log_fatal(std::string val) {
+    static void _lua_log_fatal(std::string val) {
         PLOGF << val;
     }
 

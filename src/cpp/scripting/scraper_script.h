@@ -16,10 +16,14 @@ namespace Scripting {
         ~ScraperScript();
 
         bool isLoaded();
+        std::string getPath();
+
+        bool basicSearch(std::string query, std::string* out);
 
     private:
-        bool loadSuccessful = false;
-        sol::protected_function searchFn;
+        std::string _path;
+        bool _isLoaded = false;
+        sol::protected_function searchFunc;
 
         bool initScript(const char* script_path);
 
