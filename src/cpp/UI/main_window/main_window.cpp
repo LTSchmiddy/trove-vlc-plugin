@@ -26,29 +26,28 @@ namespace UI {
         ImGui::SetNextWindowSize(menu_dimens);
         ImGui::Begin("primary_menu_window", NULL, flags);
         
-        for (const fs::directory_entry &entry : fs::directory_iterator(script_dir)) {
-            if (scraper == NULL) {
-                ImGui::Text("Select Scraper:");
+        if (scraper == NULL) {
+            ImGui::Text("Select Scraper:");
+            for (const fs::directory_entry &entry : fs::directory_iterator(script_dir)) {
                 if (ImGui::Button(entry.path().string().c_str())) {
                     scraper = new Scripting::ScraperScript(entry.path());
-                    
                 }
-            } else if (!scraper->isLoaded()) {
-                ImGui::Text("There was an error in loading this scraper");
-                ImGui::SameLine();
-                if (ImGui::Button("Close")) {
-                    delete scraper;
-                    scraper = NULL;
-                }
+            }
+        } else if (!scraper->isLoaded()) {
+            ImGui::Text("There was an error in loading this scraper. Check the log for details.");
+            ImGui::SameLine();
+            if (ImGui::Button("Close")) {
+                delete scraper;
+                scraper = NULL;
+            }
+        } else {
+            ImGui::Text("Scraper Loaded.");
+            ImGui::SameLine();
+            if (ImGui::Button("Close")) {
+                delete scraper;
+                scraper = NULL;
             } else {
-                ImGui::Text("Scraper Loaded.");
-                ImGui::SameLine();
-                if (ImGui::Button("Close")) {
-                    delete scraper;
-                    scraper = NULL;
-                } else {
-                    drawQueryInterface();
-                }
+                drawQueryInterface();
             }
         }
         ImGui::End();
