@@ -26,6 +26,7 @@ namespace Scripting {
         sol::protected_function searchFunc;
 
         bool initScript(const char* script_path);
+        bool setAndValidateFunction(std::string func_name, sol::protected_function* func);
 
     };
 }
