@@ -1,7 +1,10 @@
 {
     "Lua.diagnostics.globals": [
         "vlc",
-        "msg"
+        "msg",
+        "log",
+        "web_requests",
+        "cjson"
     ],
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "files.associations": {

@@ -9,7 +9,7 @@ namespace Scripting {
 
     class ScraperScript {
     public:
-        sol::state state = NULL;
+        sol::state lua = NULL;
 
         ScraperScript(fs::path script_path);
         ScraperScript(std::string script_path);

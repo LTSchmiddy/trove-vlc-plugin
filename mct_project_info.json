@@ -6,10 +6,11 @@
             "imgui[sdl2-binding,sdl2-renderer-binding]",
             "nlohmann-json",
             "sqlite3[tool,zlib]",
-            "lua[cpp]",
+            "lua[cpp,tools]",
             "sol2",
             "cxxopts",
             "plog",
+            "curl[ssl]",
             "curlpp"
         ]
     },
