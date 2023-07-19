@@ -30,7 +30,7 @@ namespace UI {
             ImGui::Text("Select Scraper:");
             for (const fs::directory_entry &entry : fs::directory_iterator(script_dir)) {
                 if (ImGui::Button(entry.path().string().c_str())) {
-                    scraper = new Scripting::ScraperScript(entry.path());
+                    scraper = new Scripting::MovieScraperScript(entry.path());
                 }
             }
         } else if (!scraper->isLoaded()) {

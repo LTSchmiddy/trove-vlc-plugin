@@ -4,7 +4,7 @@
 #include "gfx_headers.h"
 #include "ui/base/fragment.h"
 
-#include "scripting/scraper_script.h"
+#include "scripting/MovieScraperScript.h"
 
 namespace UI
 {
@@ -25,7 +25,7 @@ namespace UI
         void onDraw() override;
     private:
         fs::path script_dir;
-        Scripting::ScraperScript* scraper = NULL;
+        Scripting::MovieScraperScript* scraper = NULL;
 
         std::string basicSearchParam;
         std::string scrapOutput;

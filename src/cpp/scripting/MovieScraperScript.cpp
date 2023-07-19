@@ -11,23 +11,23 @@
 
 namespace Scripting {
     // Constructors:
-    ScraperScript::ScraperScript(fs::path script_path) {
+    MovieScraperScript::MovieScraperScript(fs::path script_path) {
         _isLoaded = initScript(script_path.string().c_str());
     }
-    ScraperScript::ScraperScript(std::string script_path) {
+    MovieScraperScript::MovieScraperScript(std::string script_path) {
         _isLoaded = initScript(script_path.c_str());
     }
-    ScraperScript::~ScraperScript() {}
+    MovieScraperScript::~MovieScraperScript() {}
 
     // Public:
-    bool ScraperScript::isLoaded() {
+    bool MovieScraperScript::isLoaded() {
         return _isLoaded;
     }
-    std::string ScraperScript::getPath() {
+    std::string MovieScraperScript::getPath() {
         return _path;
     }
 
-    bool ScraperScript::basicSearch(std::string query, std::string* out) {
+    bool MovieScraperScript::basicSearch(std::string query, std::string* out) {
         sol::protected_function_result result = searchFunc(query);
 
         if (!result.valid()) {
@@ -41,7 +41,7 @@ namespace Scripting {
     }
 
     // Private:
-    bool ScraperScript::initScript(const char* script_path) {
+    bool MovieScraperScript::initScript(const char* script_path) {
         _path = script_path;
         Utils::lua_open_all_libraries(&lua);
 
@@ -71,7 +71,7 @@ namespace Scripting {
         return true;
     }
 
-    bool ScraperScript::setAndValidateFunction(std::string func_name, sol::protected_function* func) {
+    bool MovieScraperScript::setAndValidateFunction(std::string func_name, sol::protected_function* func) {
         *func = lua[func_name];
         if (func->valid()) {
             PLOGD.printf("Function '%s' found in script '%s", func_name.c_str(), _path.c_str());

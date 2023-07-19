@@ -7,13 +7,13 @@
 
 namespace Scripting {
 
-    class ScraperScript {
+    class MovieScraperScript {
     public:
         sol::state lua = NULL;
 
-        ScraperScript(fs::path script_path);
-        ScraperScript(std::string script_path);
-        ~ScraperScript();
+        MovieScraperScript(fs::path script_path);
+        MovieScraperScript(std::string script_path);
+        ~MovieScraperScript();
 
         bool isLoaded();
         std::string getPath();
