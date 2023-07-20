@@ -12,9 +12,12 @@ namespace MediaSource {
         std::string getType() override;
         void loadTypeSettings(json& settings_json) override;
         void saveTypeSettings(json& settings_json) override;
+        void scanForFiles() override;
 
         //New stuff:
         std::string rootPath;        
         fs::path getRootPath();
+    private:
+        void scanDirectory(fs::path dir);
     };
 }

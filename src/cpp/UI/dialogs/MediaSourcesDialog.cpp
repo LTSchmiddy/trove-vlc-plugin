@@ -71,6 +71,10 @@ namespace UI {
                 drawFileLocation((MediaSource::FileSource*)Global::media_sources.at(it.first).get());
             }
 
+            if (ImGui::Button("Scan")) {
+                it.second->scanForFiles();
+            }
+
             ImGui::Unindent();
             ImGui::PopID();
 

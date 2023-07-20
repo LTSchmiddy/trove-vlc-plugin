@@ -10,9 +10,20 @@ namespace Settings {
         int log_level = 0;
         std::string scripts_path = "./";
         std::vector<std::string> file_extensions = {
-            ".mp4",
+            ".3gp",
+            ".avi",
+            ".flv",
             ".m4v",
-            ".avi"
+            ".mov",
+            ".mkv",
+            ".mp4",
+            ".mpg",
+            ".nsv",
+            ".ogm",
+            ".ts",
+            ".vid",
+            ".wmv",
+
         };
     };
 
