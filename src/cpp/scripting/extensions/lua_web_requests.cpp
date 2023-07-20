@@ -86,7 +86,7 @@ namespace Scripting::Extensions::WebRequests {
         return std::string(response.str());
     }
 
-    void create_lua_web_requests_module (sol::state* lua) {
+    void create_lua_web_requests_module (sol::state_view* lua) {
         sol::table requests_table = lua->create_named_table("web_requests");
 
         requests_table.set_function("post", &_lua_post_request);

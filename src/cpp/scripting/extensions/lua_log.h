@@ -4,5 +4,5 @@
 
 namespace Scripting::Extensions::Logging {
 
-    void create_lua_log_module(sol::state* lua);
+    void create_lua_log_module(sol::state_view* lua);
 }

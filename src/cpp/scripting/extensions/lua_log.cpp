@@ -24,7 +24,7 @@ namespace Scripting::Extensions::Logging {
         PLOGF << val;
     }
 
-    void create_lua_log_module(sol::state* lua) {
+    void create_lua_log_module(sol::state_view* lua) {
         sol::table log_table = lua->create_named_table("log");
 
         log_table.set_function("verbose", &_lua_log_verbose);
