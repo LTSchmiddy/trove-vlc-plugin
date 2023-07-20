@@ -38,7 +38,7 @@ namespace Settings{
             json library_settings_json = root_settings_json["library"];
 
             if (library_settings_json.contains("path")) root_settings->library.path = library_settings_json["path"].get<std::string>();
-            if (library_settings_json.contains("reset")) root_settings->library.reset = library_settings_json["reset"].get<bool>();
+            if (library_settings_json.contains("reset_on_load")) root_settings->library.reset_on_load = library_settings_json["reset_on_load"].get<bool>();
         }
     }
 
@@ -53,7 +53,7 @@ namespace Settings{
         // Database settings:
         json library_settings_json;
         library_settings_json["path"] = root_settings->library.path;
-        library_settings_json["reset"] = root_settings->library.reset;
+        library_settings_json["reset_on_load"] = root_settings->library.reset_on_load;
         root_settings_json["library"] = library_settings_json;
 
 

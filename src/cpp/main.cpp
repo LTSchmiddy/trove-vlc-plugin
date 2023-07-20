@@ -22,7 +22,13 @@ int main(int, char**)
 {
     Settings::load_settings(&Global::settings, SETTINGS_PATH);
     Logging::setup_logs();
+    
+    // Loading Media Sources:
     MediaSource::load_sources(&Global::media_sources, MEDIA_SOURCES_PATH);
+    
+    // Loading Library Database:
+    Global::library_db = new Library::Database();
+
 
     PLOGD << "App Started";
 
@@ -152,6 +158,7 @@ int main(int, char**)
     SDL_DestroyWindow(Global::sdl2_window);
     SDL_Quit();
 
+    delete Global::library_db;
     Settings::save_settings(&Global::settings, SETTINGS_PATH);
     MediaSource::save_sources(&Global::media_sources, MEDIA_SOURCES_PATH);
 

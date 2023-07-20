@@ -26,7 +26,7 @@ namespace Settings {
         };
         struct LibrarySettings {
             std::string path = "./library.db";
-            bool reset = true;
+            bool reset_on_load = true;
         } library;
     };
 
