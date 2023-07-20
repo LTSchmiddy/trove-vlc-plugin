@@ -6,12 +6,13 @@
 #include <plog/Formatters/TxtFormatter.h>
 
 #include "logging.h"
+#include "settings/settings_globals.h"
 
 namespace Logging
 {
     void setup_logs() {
         static plog::RollingFileAppender<plog::CsvFormatter> fileAppender("log.csv", 8000, 3); // Create the 1st appender.
         static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender; // Create the 2nd appender.
-        plog::init(plog::debug, &fileAppender).addAppender(&consoleAppender); // Initialize the logger with the both appenders.
+        plog::init((plog::Severity)Global::settings.log_level, &fileAppender).addAppender(&consoleAppender); // Initialize the logger with the both appenders.
     }
 } // namespace Logging

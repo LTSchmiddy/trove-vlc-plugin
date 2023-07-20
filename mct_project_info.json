@@ -11,7 +11,8 @@
             "cxxopts",
             "plog",
             "curl[ssl]",
-            "curlpp"
+            "curlpp",
+            "tinyfiledialogs"
         ]
     },
     "required_user_toolchain_values": [],

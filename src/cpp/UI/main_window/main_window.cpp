@@ -27,10 +27,6 @@ namespace UI {
         ImGui::SetNextWindowSize(window_dimens);
         ImGui::Begin("primary_menu_window", NULL, flags);
 
-        if (ImGui::Button("Show Media Sources Dialog")) {
-            create_media_sources_dialog();
-        }
-
         ImGui::End();
     }
 

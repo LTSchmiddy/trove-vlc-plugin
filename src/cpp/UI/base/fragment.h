@@ -28,11 +28,9 @@ namespace UI {
         std::string id;
         bool open = true;
         ImGuiWindowFlags flags = 0;
-        Fragment* content;
+        std::shared_ptr<Fragment> content;
 
-        bool destructContent = false;
-
-        FWindow(std::string p_id, Fragment* p_content, bool p_destruct_content = false, bool p_start_open = true, ImGuiWindowFlags p_flags = 0);
+        FWindow(std::string p_id, std::shared_ptr<Fragment> p_content, bool p_start_open = true, ImGuiWindowFlags p_flags = 0);
         ~FWindow();
 
         bool onEvent(SDL_Event* event) override;

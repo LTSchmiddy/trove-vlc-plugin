@@ -7,6 +7,7 @@
 
 namespace Settings {
     struct RootSettings {
+        int log_level = 0;
         std::string scripts_path = "./";
         std::vector<std::string> file_extensions = {
             ".mp4",
