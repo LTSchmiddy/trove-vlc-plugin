@@ -2,13 +2,9 @@
 #include <fstream>
 #include <format>
 
-#include <nlohmann/json.hpp>
 #include <plog/Log.h>
 
 #include "root_settings.h"
-
-using json = nlohmann::json;
-namespace fs = std::filesystem;
 
 namespace Settings{
 
@@ -30,7 +26,8 @@ namespace Settings{
         }
 
         // Loading settings category structs:
-        root_settings->scripts_path = root_settings_json["scripts_path"].get<std::string>();
+        if (root_settings_json.contains("scripts_path")) root_settings->scripts_path = root_settings_json["scripts_path"].get<std::string>();
+        if (root_settings_json.contains("file_extensions")) root_settings->file_extensions = root_settings_json["file_extensions"].get<std::vector<std::string>>();
     
     }
 
@@ -39,6 +36,7 @@ namespace Settings{
 
         // Generating Json for settings category structs:
         root_settings_json["scripts_path"] = root_settings->scripts_path;
+        root_settings_json["file_extensions"] = root_settings->file_extensions;
 
         std::ofstream out_file(file_path);
         out_file << root_settings_json.dump(4);

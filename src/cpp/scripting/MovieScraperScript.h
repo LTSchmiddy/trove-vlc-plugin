@@ -3,7 +3,7 @@
 #include <sol/sol.hpp>
 #include <string>
 
-#include "fs.h"
+#include "ns_abbr/fs.h"
 
 namespace Scripting {
 

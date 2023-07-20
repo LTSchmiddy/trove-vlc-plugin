@@ -1,5 +1,5 @@
 target_sources(${TARGET_NAME}
     PUBLIC
-    "./menubar.h"
-    "./menubar.cpp"
+    database.h
+    database.cpp
 )

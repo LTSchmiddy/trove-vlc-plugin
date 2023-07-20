@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <vector>
 
 #include <plog/Log.h>
 #include "globals.h"
@@ -37,9 +38,9 @@ int main(int, char**)
 
     // Create window with SDL_Renderer graphics context
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    Global::App::window = SDL_CreateWindow("Trove Manager", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
-    Global::App::renderer = SDL_CreateRenderer(Global::App::window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-    if (Global::App::renderer == nullptr)
+    Global::sdl2_window = SDL_CreateWindow("Trove Manager", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    Global::renderer = SDL_CreateRenderer(Global::sdl2_window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+    if (Global::renderer == nullptr)
     {
         PLOGE.printf("Error creating SDL_Renderer!");
         return 0;
@@ -60,8 +61,8 @@ int main(int, char**)
     //ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
-    ImGui_ImplSDL2_InitForSDLRenderer(Global::App::window, Global::App::renderer);
-    ImGui_ImplSDLRenderer2_Init(Global::App::renderer);
+    ImGui_ImplSDL2_InitForSDLRenderer(Global::sdl2_window, Global::renderer);
+    ImGui_ImplSDLRenderer2_Init(Global::renderer);
 
     // Load Fonts
     // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
@@ -82,12 +83,17 @@ int main(int, char**)
     // Our state
     // ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
-    Global::App::main_window = new UI::MainWindow();
+    Global::main_window = new UI::MainWindow();
+    Global::sub_window_handler = new UI::SubWindowHandler();
 
     // Main loop:
-    while (!Global::App::should_terminate)
-    {
-        Global::App::main_window->onBackground();
+    while (!Global::should_terminate) {
+        
+        Global::main_window->onBackground();
+
+        // Background for sub-windows:
+        Global::sub_window_handler->handleNewWindows();
+        Global::sub_window_handler->handleBackgrounds();
 
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -98,12 +104,17 @@ int main(int, char**)
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
-            if (event.type == SDL_QUIT)
-                Global::App::should_terminate = true;
-            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(Global::App::window))
-                Global::App::should_terminate = true;
-
-            Global::App::main_window->onEvent(&event);
+            if (event.type == SDL_QUIT) {
+                Global::should_terminate = true;
+            }
+            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(Global::sdl2_window)) {
+                Global::should_terminate = true;
+            }
+            
+            // Only send the event to subwindows if the main window consumed the event:
+            if (!Global::main_window->onEvent(&event)) {
+                 Global::sub_window_handler->handleEvents(&event);
+            }
         }
 
         // Start the Dear ImGui frame
@@ -111,26 +122,32 @@ int main(int, char**)
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
+        // Draw Application:
         UI::draw_menu_bar();
-        Global::App::main_window->onDraw();
+        Global::sub_window_handler->handleDraw();
+        Global::main_window->onDraw();
+
 
         // Rendering
         ImGui::Render();
-        SDL_RenderSetScale(Global::App::renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
-        SDL_SetRenderDrawColor(Global::App::renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
-        SDL_RenderClear(Global::App::renderer);
+        SDL_RenderSetScale(Global::renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
+        SDL_SetRenderDrawColor(Global::renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
+        SDL_RenderClear(Global::renderer);
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-        SDL_RenderPresent(Global::App::renderer);
+        SDL_RenderPresent(Global::renderer);
+
+        Global::sub_window_handler->handleDeletion();
     }
 
     // Cleanup
-    delete Global::App::main_window;
+    delete Global::main_window;
+    delete Global::sub_window_handler;
     ImGui_ImplSDLRenderer2_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
-    SDL_DestroyRenderer(Global::App::renderer);
-    SDL_DestroyWindow(Global::App::window);
+    SDL_DestroyRenderer(Global::renderer);
+    SDL_DestroyWindow(Global::sdl2_window);
     SDL_Quit();
 
     Settings::save_settings(&Global::settings, SETTINGS_PATH);

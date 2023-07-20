@@ -9,6 +9,7 @@ bool Fragment::onEvent(SDL_Event* event) {
 }
 void Fragment::onBackground() { }
 void Fragment::onDraw() { }
+bool Fragment::shouldDestroy() { return false; };
 
 // === FWindow Class Defs ===
 // Constructor and destructor:
@@ -41,4 +42,6 @@ void FWindow::onDraw() {
     content->onDraw();
     ImGui::End();
 }
+
+bool FWindow::shouldDestroy() { return content->shouldDestroy(); };
 }
