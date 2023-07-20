@@ -9,7 +9,7 @@ target_sources(${TARGET_NAME}
     "./main.cpp"
 )
 
-add_subdirectory("./database")
+add_subdirectory("./library")
 add_subdirectory("./media_source")
 add_subdirectory("./ns_abbr")
 add_subdirectory("./scripting")

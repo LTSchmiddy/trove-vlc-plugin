@@ -2,6 +2,6 @@
 
 target_sources(${TARGET_NAME}
     PUBLIC
-    fs.h
-    json.h
+    "./fs.h"
+    "./json.h"
 )

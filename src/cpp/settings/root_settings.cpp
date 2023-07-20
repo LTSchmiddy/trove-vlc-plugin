@@ -15,7 +15,7 @@ namespace Settings{
         std::ifstream in_file(file_path);
         
         if (!in_file.is_open()){
-            PLOG_WARNING.printf("Settings file at '%s' could not be opened.", file_path.string().c_str());
+            // PLOG_WARNING.printf("Settings file at '%s' could not be opened.", file_path.string().c_str());
             return;
         }
 
@@ -24,7 +24,7 @@ namespace Settings{
         in_file.close();
 
         if (root_settings_json.empty()) {
-            PLOG_WARNING.printf("Settings file at '%s' was empty.", file_path.string().c_str());
+            // PLOG_WARNING.printf("Settings file at '%s' was empty.", file_path.string().c_str());
             return;
         }
 
@@ -33,18 +33,12 @@ namespace Settings{
         if (root_settings_json.contains("scripts_path")) root_settings->scripts_path = root_settings_json["scripts_path"].get<std::string>();
         if (root_settings_json.contains("file_extensions")) root_settings->file_extensions = root_settings_json["file_extensions"].get<std::vector<std::string>>();
 
-        // Load media sources:
-        if (root_settings_json.contains("media_sources")) {
-            json media_sources_json = root_settings_json["media_sources"];
+        // Loading library:
+        if (root_settings_json.contains("library")) {
+            json library_settings_json = root_settings_json["library"];
 
-            for (auto &it : media_sources_json.items()) {
-                std::string s_type = it.value()["type"].get<std::string>();
-                if(s_type == "file") {
-                    std::shared_ptr<MediaSource::FileSource> new_source = std::make_shared<MediaSource::FileSource>();
-                    new_source->loadSettings(it.value());
-                    Global::media_sources.emplace(it.key(), new_source);
-                }
-            }
+            if (library_settings_json.contains("path")) root_settings->library.path = library_settings_json["path"].get<std::string>();
+            if (library_settings_json.contains("reset")) root_settings->library.reset = library_settings_json["reset"].get<bool>();
         }
     }
 
@@ -56,15 +50,12 @@ namespace Settings{
         root_settings_json["scripts_path"] = root_settings->scripts_path;
         root_settings_json["file_extensions"] = root_settings->file_extensions;
 
-        // Saving media sources:
-        json media_sources_json;
-        for (auto &it : Global::media_sources) {
-            json source_json;
-            it.second->saveSettings(source_json);
-            media_sources_json[it.first] = source_json;
-        }
+        // Database settings:
+        json library_settings_json;
+        library_settings_json["path"] = root_settings->library.path;
+        library_settings_json["reset"] = root_settings->library.reset;
+        root_settings_json["library"] = library_settings_json;
 
-        root_settings_json["media_sources"] = media_sources_json;
 
         std::ofstream out_file(file_path);
         out_file << root_settings_json.dump(4);

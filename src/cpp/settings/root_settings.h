@@ -23,8 +23,11 @@ namespace Settings {
             ".ts",
             ".vid",
             ".wmv",
-
         };
+        struct LibrarySettings {
+            std::string path = "./library.db";
+            bool reset = true;
+        } library;
     };
 
     void load_settings(RootSettings* settings, fs::path file);

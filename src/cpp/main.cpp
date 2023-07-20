@@ -6,10 +6,12 @@
 #include "globals.h"
 #include "settings/root_settings.h"
 #include "ui/menubar/menubar.h"
-
+#include "media_source/serialize.h"
 #include "logging.h"
+#include "ns_abbr/fs.h"
 
 #define SETTINGS_PATH "settings.json"
+#define MEDIA_SOURCES_PATH "media_sources.json"
 
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
@@ -19,8 +21,8 @@
 int main(int, char**)
 {
     Settings::load_settings(&Global::settings, SETTINGS_PATH);
-
     Logging::setup_logs();
+    MediaSource::load_sources(&Global::media_sources, MEDIA_SOURCES_PATH);
 
     PLOGD << "App Started";
 
@@ -151,6 +153,7 @@ int main(int, char**)
     SDL_Quit();
 
     Settings::save_settings(&Global::settings, SETTINGS_PATH);
+    MediaSource::save_sources(&Global::media_sources, MEDIA_SOURCES_PATH);
 
     return 0;
 }
