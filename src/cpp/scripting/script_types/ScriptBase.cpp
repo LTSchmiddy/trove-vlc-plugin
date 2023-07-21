@@ -48,9 +48,7 @@ namespace Scripting::ScriptTypes {
         }
         
         // Checking that script has all of it's necessary components:
-
-
-        return true;
+        return validate();
     }
 
     bool ScriptBase::setAndValidateFunction(std::string func_name, sol::protected_function* func) {

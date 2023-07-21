@@ -13,7 +13,10 @@ namespace Scripting::ScriptTypes {
         MovieParserScript(fs::path script_path);
         MovieParserScript(std::string script_path);
 
+        void parsePath(std::string path);
+
     protected:
+        sol::protected_function parsePathFunc;
         bool validate() override;
 
     };

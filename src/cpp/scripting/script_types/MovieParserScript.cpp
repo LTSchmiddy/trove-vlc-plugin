@@ -17,6 +17,7 @@ namespace Scripting::ScriptTypes {
 
     // Protected:
     bool MovieParserScript::validate() {
+        if (!setAndValidateFunction("parse_path", &parsePathFunc)) { return false; }
         return true;
     }
 }
