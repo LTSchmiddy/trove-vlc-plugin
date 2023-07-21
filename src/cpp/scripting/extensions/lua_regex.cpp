@@ -1,7 +1,11 @@
 #include <regex>
 #include <vector>
+#include <format>
+
+#include <plog/Log.h>
 
 #include "lua_regex.h"
+
 
 namespace Scripting::Extensions::Regex {
 
@@ -53,39 +57,73 @@ namespace Scripting::Extensions::Regex {
 
         if (m.size() > 0) {
             sol::table prefix_table = t.create("prefix");
-            prefix_table["first"] = m.prefix().first;
-            prefix_table["second"] = m.prefix().second;
+            prefix_table["length"] = m.prefix().length();
             prefix_table["matched"] = m.prefix().matched;
             prefix_table["str"] = m.prefix().str();
 
             sol::table suffix_table = t.create("suffix");
-            suffix_table["first"] = m.suffix().first;
-            suffix_table["second"] = m.suffix().second;
+            suffix_table["length"] = m.suffix().length();
             suffix_table["matched"] = m.suffix().matched;
             suffix_table["str"] = m.suffix().str();
 
-            sol::table indices_table = t.create("indices");
+            sol::table index_table = t.create("index");
             for (int i = 0; i < m.size(); i++) {
-                sol::table index_table = indices_table.create(i);
-                index_table["first"] = m[i].first;
-                index_table["second"] = m[i].second;
-                index_table["matched"] = m[i].matched;
-                index_table["str"] = m[i].str();
+                sol::table entry_table = index_table.create();
+                entry_table["length"] = m[i].length();
+                entry_table["matched"] = m[i].matched;
+                entry_table["str"] = m[i].str();
+                index_table.add(entry_table);
             }
         }
     }
 
-    static void _lua_regex_match(std::string str, std::string regex_str, sol::table output, std::vector<std::string> syntax_options, std::vector<std::string> match_flags) {
+    static bool _lua_regex_match(std::string str, std::string regex_str, sol::table output, std::vector<std::string> syntax_options, std::vector<std::string> match_flags) {
+        PLOGV << regex_str;
+        
         std::regex re(regex_str, get_syntax_options(syntax_options));
         std::smatch m;
 
         bool result = std::regex_match(str, m, re, get_match_flags(match_flags));
         smatch_to_table(m, output);
+        
+        return result;
+    }
+    
+    // Only returns the first match.
+    static bool _lua_regex_search(std::string str, std::string regex_str, sol::table output, std::vector<std::string> syntax_options, std::vector<std::string> match_flags) {
+        std::regex re(regex_str, get_syntax_options(syntax_options));
+        std::smatch m;
+
+        bool result = std::regex_search(str, m, re, get_match_flags(match_flags));
+        smatch_to_table(m, output);
+
+        return result;
+    }
+
+    // Returns all matches:
+    static bool _lua_regex_search_iter(std::string str, std::string regex_str, sol::table output, std::vector<std::string> syntax_options, std::vector<std::string> match_flags) {
+        std::regex re(regex_str, get_syntax_options(syntax_options));
+
+        // Constructin the regex iterator:
+        std::sregex_iterator iter_begin(str.begin(), str.end(), re, get_match_flags(match_flags));
+        std::sregex_iterator iter_end;
+        
+        output.clear();
+        for (std::sregex_iterator i = iter_begin; i != iter_end; ++i) {
+            std::smatch match = *i;
+            sol::table match_table = output.create();
+            smatch_to_table(match, match_table);
+            output.add(match_table);
+        }
+        
+        return output.size() > 0;
     }
 
     void create_lua_regex_module(sol::state_view* lua) {
         sol::table regex_table = lua->create_named_table("regex");
 
         regex_table.set_function("match", &_lua_regex_match);
+        regex_table.set_function("search", &_lua_regex_search);
+        regex_table.set_function("search_iter", &_lua_regex_search_iter);
     }
 }

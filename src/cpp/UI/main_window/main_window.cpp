@@ -7,11 +7,14 @@ using json = nlohmann::json;
 
 namespace UI {
     MainWindow::MainWindow() { 
-        script_dir = fs::path(Global::settings.scripts_path);
+        
     }
     MainWindow::~MainWindow() {
-        if (scraper == NULL) {
+        if (scraper != NULL) {
             delete scraper;
+        }
+        if (parser != NULL) {
+            delete parser;
         }
     }
 
@@ -26,17 +29,46 @@ namespace UI {
         ImGui::SetNextWindowPos(margins);
         ImGui::SetNextWindowSize(window_dimens);
         ImGui::Begin("primary_menu_window", NULL, flags);
-
+        drawParserTestInterface();
         ImGui::End();
+    }
+
+    void MainWindow::drawParserTestInterface() {
+        if (parser == NULL) {
+            ImGui::Text("Select Parser:");
+            for (const fs::directory_entry &entry : fs::directory_iterator(Global::settings.scripts.movie_parsers_path)) {
+                if (ImGui::Button(entry.path().string().c_str())) {
+                    parser = new Scripting::ScriptTypes::MovieParserScript(entry.path());
+                }
+            }
+        // If a scraper failed to start:
+        } else if (!parser->isLoaded()) {
+            ImGui::Text("There was an error in loading this parser. Check the log for details.");
+            ImGui::SameLine();
+            if (ImGui::Button("Close")) {
+                delete parser;
+                parser = NULL;
+            }
+        // Scraper is loaded:
+        } else {
+            ImGui::Text("Parser Loaded.");
+            ImGui::SameLine();
+            if (ImGui::Button("Close")) {
+                delete parser;
+                parser = NULL;
+            } else {
+                
+            }
+        }
     }
 
     void MainWindow::drawQueryInterface() {
         // If no scraper is loaded:
         if (scraper == NULL) {
             ImGui::Text("Select Scraper:");
-            for (const fs::directory_entry &entry : fs::directory_iterator(script_dir)) {
+            for (const fs::directory_entry &entry : fs::directory_iterator(Global::settings.scripts.movie_scrapers_path)) {
                 if (ImGui::Button(entry.path().string().c_str())) {
-                    scraper = new Scripting::MovieScraperScript(entry.path());
+                    scraper = new Scripting::ScriptTypes::MovieScraperScript(entry.path());
                 }
             }
         // If a scraper failed to start:

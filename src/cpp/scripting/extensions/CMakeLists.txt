@@ -4,6 +4,8 @@ target_sources(${TARGET_NAME}
     "./lua_json.cpp"
     "./lua_log.h"
     "./lua_log.cpp"
+    "./lua_regex.h"
+    "./lua_regex.cpp"
     "./lua_web_requests.h"
     "./lua_web_requests.cpp"
     

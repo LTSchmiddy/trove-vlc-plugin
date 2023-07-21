@@ -4,7 +4,8 @@
 #include "gfx_headers.h"
 #include "ui/base/fragment.h"
 
-#include "scripting/MovieScraperScript.h"
+#include "scripting/script_types/MovieScraperScript.h"
+#include "scripting/script_types/MovieParserScript.h"
 
 namespace UI
 {
@@ -25,11 +26,13 @@ namespace UI
         void onDraw() override;
     private:
         fs::path script_dir;
-        Scripting::MovieScraperScript* scraper = NULL;
+        Scripting::ScriptTypes::MovieScraperScript* scraper = NULL;
+        Scripting::ScriptTypes::MovieParserScript* parser = NULL;
 
         std::string basicSearchParam;
         std::string scrapOutput;
 
+        void drawParserTestInterface();
         void drawQueryInterface();
 
     };

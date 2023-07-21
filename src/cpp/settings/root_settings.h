@@ -8,7 +8,6 @@
 namespace Settings {
     struct RootSettings {
         int log_level = 0;
-        std::string scripts_path = "./";
         std::vector<std::string> file_extensions = {
             ".3gp",
             ".avi",
@@ -24,6 +23,10 @@ namespace Settings {
             ".vid",
             ".wmv",
         };
+        struct ScriptsSettings {
+            std::string movie_scrapers_path = "./movie_scrapers";
+            std::string movie_parsers_path = "./movie_parsers";
+        } scripts;
         struct LibrarySettings {
             std::string path = "./library.db";
             bool reset_on_load = true;

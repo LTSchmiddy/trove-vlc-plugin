@@ -4,7 +4,8 @@
         "msg",
         "log",
         "web_requests",
-        "cjson"
+        "cjson",
+        "regex"
     ],
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "files.associations": {

@@ -1,0 +1,9 @@
+target_sources(${TARGET_NAME}
+    PUBLIC
+    "./MovieParserScript.h"
+    "./MovieParserScript.cpp"
+    "./MovieScraperScript.h"
+    "./MovieScraperScript.cpp"
+    "./ScriptBase.h"
+    "./ScriptBase.cpp"
+)

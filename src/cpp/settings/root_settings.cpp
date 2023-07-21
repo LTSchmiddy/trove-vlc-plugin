@@ -30,8 +30,13 @@ namespace Settings{
 
         // Loading settings category structs:
         if (root_settings_json.contains("log_level")) root_settings->log_level = root_settings_json["log_level"].get<int>();
-        if (root_settings_json.contains("scripts_path")) root_settings->scripts_path = root_settings_json["scripts_path"].get<std::string>();
         if (root_settings_json.contains("file_extensions")) root_settings->file_extensions = root_settings_json["file_extensions"].get<std::vector<std::string>>();
+
+        if (root_settings_json.contains("scripts")) {
+            json scripts_settings_json = root_settings_json["scripts"];
+            if (scripts_settings_json.contains("movie_scrapers")) root_settings->scripts.movie_scrapers_path = scripts_settings_json["movie_scrapers"].get<std::string>();
+            if (scripts_settings_json.contains("movie_parsers")) root_settings->scripts.movie_parsers_path = scripts_settings_json["movie_parsers"].get<std::string>();
+        }
 
         // Loading library:
         if (root_settings_json.contains("library")) {
@@ -47,8 +52,13 @@ namespace Settings{
 
         // Generating Json for settings category structs:
         root_settings_json["log_level"] = root_settings->log_level;
-        root_settings_json["scripts_path"] = root_settings->scripts_path;
         root_settings_json["file_extensions"] = root_settings->file_extensions;
+
+        // Scripts settings:
+        json scripts_settings_json;
+        scripts_settings_json["movie_scrapers"] = root_settings->scripts.movie_scrapers_path;
+        scripts_settings_json["movie_parsers"] = root_settings->scripts.movie_parsers_path;
+        root_settings_json["scripts"] = scripts_settings_json;
 
         // Database settings:
         json library_settings_json;

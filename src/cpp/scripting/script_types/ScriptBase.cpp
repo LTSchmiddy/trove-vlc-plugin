@@ -2,52 +2,34 @@
 #include <Plog/Log.h>
 #include <functional>
 
-#include "MovieScraperScript.h"
-#include "extensions/lua_log.h"
-#include "extensions/lua_web_requests.h"
-#include "extensions/lua_json.h"
-#include "lua_utils.h"
+#include "ScriptBase.h"
+#include "scripting/lua_utils.h"
 
 
-namespace Scripting {
+namespace Scripting::ScriptTypes {
     // Constructors:
-    MovieScraperScript::MovieScraperScript(fs::path script_path) {
+    ScriptBase::ScriptBase() {}
+
+    ScriptBase::ScriptBase(fs::path script_path) {
         _isLoaded = initScript(script_path.string().c_str());
     }
-    MovieScraperScript::MovieScraperScript(std::string script_path) {
+    ScriptBase::ScriptBase(std::string script_path) {
         _isLoaded = initScript(script_path.c_str());
     }
-    MovieScraperScript::~MovieScraperScript() {}
+    ScriptBase::~ScriptBase() {}
 
     // Public:
-    bool MovieScraperScript::isLoaded() {
+    bool ScriptBase::isLoaded() {
         return _isLoaded;
     }
-    std::string MovieScraperScript::getPath() {
+    std::string ScriptBase::getPath() {
         return _path;
     }
 
-    bool MovieScraperScript::basicSearch(std::string query, std::string* out) {
-        sol::protected_function_result result = searchFunc(query);
-
-        if (!result.valid()) {
-            PLOGE.printf("Error in script '%s' search function", _path.c_str());
-            return false;
-        }
-
-        (*out) = result;
-
-        return true;
-    }
-
     // Private:
-    bool MovieScraperScript::initScript(const char* script_path) {
+    bool ScriptBase::initScript(const char* script_path) {
         _path = script_path;
         Utils::lua_open_all_libraries(&lua);
-
-        Scripting::Extensions::Logging::create_lua_log_module(&lua);
-        Scripting::Extensions::Json::create_lua_json_module(&lua, true);
-        Scripting::Extensions::WebRequests::create_lua_web_requests_module(&lua);
 
         // Load the script:
         sol::protected_function_result result;
@@ -66,12 +48,12 @@ namespace Scripting {
         }
         
         // Checking that script has all of it's necessary components:
-        if (!setAndValidateFunction("search", &searchFunc)) { return false; }
+
 
         return true;
     }
 
-    bool MovieScraperScript::setAndValidateFunction(std::string func_name, sol::protected_function* func) {
+    bool ScriptBase::setAndValidateFunction(std::string func_name, sol::protected_function* func) {
         *func = lua[func_name];
         if (func->valid()) {
             PLOGD.printf("Function '%s' found in script '%s", func_name.c_str(), _path.c_str());
@@ -80,7 +62,8 @@ namespace Scripting {
 
         PLOGE.printf("Function '%s' not found in script '%s", func_name.c_str(), _path.c_str());
         return false;
-
     }
+
+    bool ScriptBase::validate() {return true;}
 
 }
