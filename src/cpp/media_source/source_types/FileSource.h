@@ -5,7 +5,7 @@
 
 #include "SourceBase.h"
 
-namespace MediaSource {
+namespace MediaSource::SourceType {
     class FileSource : public SourceBase {
     public:
         // Override functions:

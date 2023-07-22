@@ -6,7 +6,7 @@
 #include "source_types/FileSource.h"
 
 namespace MediaSource {
-    void load_sources(std::map<std::string, std::shared_ptr<MediaSource::SourceBase>>* media_sources, fs::path file_path) {
+    void load_sources(std::map<std::string, std::shared_ptr<MediaSource::SourceType::SourceBase>>* media_sources, fs::path file_path) {
         std::ifstream in_file(file_path);
         
         if (!in_file.is_open()){
@@ -26,14 +26,14 @@ namespace MediaSource {
         for (auto &it : media_sources_json.items()) {
             std::string s_type = it.value()["type"].get<std::string>();
             if(s_type == "file") {
-                std::shared_ptr<MediaSource::FileSource> new_source = std::make_shared<MediaSource::FileSource>();
+                std::shared_ptr<MediaSource::SourceType::FileSource> new_source = std::make_shared<MediaSource::SourceType::FileSource>();
                 new_source->loadSettings(it.value());
                 media_sources->emplace(it.key(), new_source);
             }
         }
     }
     
-    void save_sources(std::map<std::string, std::shared_ptr<MediaSource::SourceBase>>* media_sources, fs::path file_path) {
+    void save_sources(std::map<std::string, std::shared_ptr<MediaSource::SourceType::SourceBase>>* media_sources, fs::path file_path) {
         // Saving media sources:
         json media_sources_json;
         for (auto &it : *media_sources) {

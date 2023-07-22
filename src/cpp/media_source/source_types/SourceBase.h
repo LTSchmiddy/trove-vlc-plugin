@@ -5,7 +5,7 @@
 #include "ns_abbr/json.h"
 #include "scripting/script_types/MovieParserScript.h"
 
-namespace MediaSource {
+namespace MediaSource::SourceType {
     enum class CONTENT_TYPE {
         MOVIES = 0,
         TV_SHOWS = 1,

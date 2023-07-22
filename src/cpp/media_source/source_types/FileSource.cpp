@@ -6,7 +6,7 @@
 #include "settings/settings_globals.h"
 
 
-namespace MediaSource {
+namespace MediaSource::SourceType {
     std::string FileSource::getType() {
         return "file";
     }

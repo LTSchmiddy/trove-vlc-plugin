@@ -23,7 +23,7 @@ namespace UI {
             if(ImGui::BeginMenu("Add##media_sources_add_menu")) {
                 ImGui::PushID("media_sources_add_menu_choices");
                 if (ImGui::MenuItem("File Location")){
-                    Global::media_sources.emplace("New File Source", std::make_shared<MediaSource::FileSource>());
+                    Global::media_sources.emplace("New File Source", std::make_shared<MediaSource::SourceType::FileSource>());
                 }
                 ImGui::PopID();
                 ImGui::EndMenu();
@@ -54,14 +54,14 @@ namespace UI {
             ImGui::Text("Content Type:");
             ImGui::SameLine();
             if (ImGui::BeginCombo("##content_type:", contentTypeLabels[(int)it.second->contentType].c_str())) {
-                if (ImGui::Selectable(contentTypeLabels[(int)MediaSource::CONTENT_TYPE::MOVIES].c_str(), it.second->contentType == MediaSource::CONTENT_TYPE::MOVIES)) {
-                    it.second->contentType = MediaSource::CONTENT_TYPE::MOVIES;
+                if (ImGui::Selectable(contentTypeLabels[(int)MediaSource::SourceType::CONTENT_TYPE::MOVIES].c_str(), it.second->contentType == MediaSource::SourceType::CONTENT_TYPE::MOVIES)) {
+                    it.second->contentType = MediaSource::SourceType::CONTENT_TYPE::MOVIES;
                 }
-                if (ImGui::Selectable(contentTypeLabels[(int)MediaSource::CONTENT_TYPE::TV_SHOWS].c_str(), it.second->contentType == MediaSource::CONTENT_TYPE::TV_SHOWS)) {
-                    it.second->contentType = MediaSource::CONTENT_TYPE::TV_SHOWS;
+                if (ImGui::Selectable(contentTypeLabels[(int)MediaSource::SourceType::CONTENT_TYPE::TV_SHOWS].c_str(), it.second->contentType == MediaSource::SourceType::CONTENT_TYPE::TV_SHOWS)) {
+                    it.second->contentType = MediaSource::SourceType::CONTENT_TYPE::TV_SHOWS;
                 }
-                if (ImGui::Selectable(contentTypeLabels[(int)MediaSource::CONTENT_TYPE::OTHER].c_str(), it.second->contentType == MediaSource::CONTENT_TYPE::OTHER)) {
-                    it.second->contentType = MediaSource::CONTENT_TYPE::OTHER;
+                if (ImGui::Selectable(contentTypeLabels[(int)MediaSource::SourceType::CONTENT_TYPE::OTHER].c_str(), it.second->contentType == MediaSource::SourceType::CONTENT_TYPE::OTHER)) {
+                    it.second->contentType = MediaSource::SourceType::CONTENT_TYPE::OTHER;
                 }
                 ImGui::EndCombo();
             }
@@ -70,7 +70,7 @@ namespace UI {
             // Now to draw the config options for the source type:
             if (it.second->getType() == "file") {
                 // Well, that's kind of a convoluted way to do this, but it SHOULD work:
-                drawFileLocation((MediaSource::FileSource*)Global::media_sources.at(it.first).get());
+                drawFileLocation((MediaSource::SourceType::FileSource*)Global::media_sources.at(it.first).get());
             }
 
             if (ImGui::Button("Scan")) {
@@ -94,7 +94,7 @@ namespace UI {
         }
     } 
 
-    void MediaSourcesDialog::drawFileLocation(MediaSource::FileSource* source) {
+    void MediaSourcesDialog::drawFileLocation(MediaSource::SourceType::FileSource* source) {
         ImGui::Text("Source Type: File");
         ImGui::Text("Root Path:");
         ImGui::SameLine();

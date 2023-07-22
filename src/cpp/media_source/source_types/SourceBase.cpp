@@ -1,6 +1,6 @@
 #include "SourceBase.h"
 
-namespace MediaSource {
+namespace MediaSource::SourceType {
 
     std::string SourceBase::getType() { return "base"; }
     void SourceBase::_scan(Scripting::ScriptTypes::MovieParserScript* parser) {}

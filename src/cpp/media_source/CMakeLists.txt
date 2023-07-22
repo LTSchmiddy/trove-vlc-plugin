@@ -2,9 +2,8 @@ target_sources(${TARGET_NAME}
     PUBLIC
     "./source_globals.h"
 
-    "./MediaSourcesManager.h"
-    "./MediaSourcesManager.cpp"
-
+    "./MediaSourceManager.h"
+    "./MediaSourceManager.cpp"
     "./serialize.h"
     "./serialize.cpp"
 )
