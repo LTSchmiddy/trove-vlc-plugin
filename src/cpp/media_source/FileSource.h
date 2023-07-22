@@ -3,7 +3,7 @@
 #include <string>
 #include "ns_abbr/fs.h"
 
-#include "source_base.h"
+#include "SourceBase.h"
 
 namespace MediaSource {
     class FileSource : public SourceBase {
@@ -12,12 +12,12 @@ namespace MediaSource {
         std::string getType() override;
         void loadTypeSettings(json& settings_json) override;
         void saveTypeSettings(json& settings_json) override;
-        void scanForFiles() override;
+        void _scan(Scripting::ScriptTypes::MovieParserScript* parser) override;
 
         //New stuff:
-        std::string rootPath;        
+        std::string rootPath;
         fs::path getRootPath();
     private:
-        void scanDirectory(fs::path dir);
+        void scanDirectory(fs::path dir, Scripting::ScriptTypes::MovieParserScript* parser);
     };
 }

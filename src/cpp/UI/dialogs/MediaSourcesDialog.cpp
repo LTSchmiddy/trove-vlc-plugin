@@ -3,8 +3,10 @@
 #include <plog/Log.h>
 #include <tinyfiledialogs.h>
 
+#include "ns_abbr/fs.h"
 #include "MediaSourcesDialog.h"
 #include "ui/ui_globals.h"
+#include "settings/settings_globals.h"
 #include "media_source/source_globals.h"
 
 
@@ -72,7 +74,7 @@ namespace UI {
             }
 
             if (ImGui::Button("Scan")) {
-                it.second->scanForFiles();
+                it.second->startScan();
             }
 
             ImGui::Unindent();
@@ -104,6 +106,15 @@ namespace UI {
             if (selection != NULL) {
                 source->rootPath = selection;
             }
+        }
+
+        if (ImGui::BeginCombo("File Parser##selectable_file_parser:", source->parserScriptPath.c_str())) {
+            for (const fs::directory_entry &entry : fs::directory_iterator(Global::settings.scripts.movie_parsers_path)) {
+                if (ImGui::Selectable(entry.path().string().c_str(), entry.path().string() == source->parserScriptPath)) {
+                    source->parserScriptPath = entry.path().string();
+                }
+            }
+            ImGui::EndCombo();
         }
 
     }

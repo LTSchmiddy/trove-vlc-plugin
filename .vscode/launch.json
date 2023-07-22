@@ -5,12 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Lua Attach",
+            "processId": "${command:pickProcess}",
+            "request": "attach",
+            "stopOnEntry": false,
+            "type": "lua"
+        },
+        {
             "type": "lldb",
             "request": "launch",
             "name": "Debug Trove Manager",
             "program": "${workspaceFolder}/build/x64-windows-Debug/bin/trove-manager.exe",
             "args": [],
             "cwd": "${workspaceFolder}/cwd"
-        }
+        },
+        // {
+        //     "type": "lua",
+        //     ""
+        // }
     ]
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sol/sol.hpp>
+#include <vector>
 #include <string>
 
 #include "ns_abbr/fs.h"
@@ -13,7 +14,7 @@ namespace Scripting::ScriptTypes {
         MovieParserScript(fs::path script_path);
         MovieParserScript(std::string script_path);
 
-        void parsePath(std::string path);
+        std::string parsePath(std::string directory, std::string filename);
 
     protected:
         sol::protected_function parsePathFunc;

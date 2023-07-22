@@ -7,7 +7,7 @@
 
 #include "root_settings.h"
 #include "media_source/source_globals.h"
-#include "media_source/file_source.h"
+#include "media_source/SourceBase.h"
 
 namespace Settings{
 

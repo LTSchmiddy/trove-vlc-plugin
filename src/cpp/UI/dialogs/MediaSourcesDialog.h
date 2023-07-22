@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "ui/base/fragment.h"
-#include "media_source/file_source.h"
+#include "media_source/FileSource.h"
 
 namespace UI {
     const std::string contentTypeLabels[] = {"Movies", "TV Shows", "Other"};

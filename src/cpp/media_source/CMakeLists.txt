@@ -2,10 +2,10 @@ target_sources(${TARGET_NAME}
     PUBLIC
     "./source_globals.h"
 
-    "./file_source.h"
-    "./file_source.cpp"
+    "./FileSource.h"
+    "./FileSource.cpp"
     "./serialize.h"
     "./serialize.cpp"
-    "./source_base.h"
-    "./source_base.cpp"
+    "./SourceBase.h"
+    "./SourceBase.cpp"
 )
