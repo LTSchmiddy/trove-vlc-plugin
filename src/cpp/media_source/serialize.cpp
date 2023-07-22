@@ -3,7 +3,7 @@
 
 #include "serialize.h"
 
-#include "FileSource.h"
+#include "source_types/FileSource.h"
 
 namespace MediaSource {
     void load_sources(std::map<std::string, std::shared_ptr<MediaSource::SourceBase>>* media_sources, fs::path file_path) {
