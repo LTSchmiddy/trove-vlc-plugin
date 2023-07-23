@@ -5,8 +5,39 @@ string = require("string");
 
 TMDB_API_KEY = "42cb439f9947906214fe04dc7ed1eb16"
 TMDB_API_READ_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MmNiNDM5Zjk5NDc5MDYyMTRmZTA0ZGM3ZWQxZWIxNiIsInN1YiI6IjVkNzI5Nzk4MjA5ZjE4NjkxNGZiMDhlZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.uyObV2lib7s23d7CoMKqHgzkrVAuzJauP4neA20AsLQ"
+TMBD_REQUEST_HEADER = {"Authorization: Bearer " .. TMDB_API_READ_TOKEN}
 
-function search(query_text)
-    local retVal = web_requests.get_args("https://api.themoviedb.org/3/search/movie", {query = query_text}, {"Authorization: Bearer " .. TMDB_API_READ_TOKEN})
-    return retVal
+-- return title, date, description
+function basic_search(query_json)
+    query_dict = cjson.decode(query_json)
+
+    local search_result = web_requests.get_args(
+        "https://api.themoviedb.org/3/search/movie", 
+        {
+            query = query_dict["name"], 
+            year = query_dict["year"]
+        }, 
+        TMBD_REQUEST_HEADER
+    )
+    local r = cjson.decode(search_result)
+
+    -- if no results are found, return nothing:
+    if r.total_results == 0 then return "{}" end
+
+    -- We're going to use the first movie in the search results:
+    selected_movie_id = "" .. r.results[1].id
+
+    local movie_info_json = web_requests.get(
+        "https://api.themoviedb.org/3/movie/" .. selected_movie_id, 
+        TMBD_REQUEST_HEADER
+    )
+    
+    -- Since we pulled the id straight from another response, we can assume it's valid.
+    local movie_info = cjson.decode(movie_info_json)
+
+    return cjson.encode ({
+        title = movie_info.original_title,
+        date = movie_info.release_date,
+        desc = movie_info.overview
+    }) 
 end

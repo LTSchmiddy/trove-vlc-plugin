@@ -12,12 +12,12 @@ namespace MediaSource::SourceType {
         std::string getType() override;
         void loadTypeSettings(json& settings_json) override;
         void saveTypeSettings(json& settings_json) override;
-        void _scan(Scripting::ScriptTypes::MovieParserScript* parser) override;
+        void scan(Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) override;
 
         //New stuff:
         std::string rootPath;
         fs::path getRootPath();
     private:
-        void scanDirectory(fs::path dir, Scripting::ScriptTypes::MovieParserScript* parser);
+        void scanDirectory(fs::path dir, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper);
     };
 }

@@ -12,7 +12,8 @@
             "plog",
             "curl[ssl]",
             "curlpp",
-            "tinyfiledialogs"
+            "tinyfiledialogs",
+            "bshoshany-thread-pool"
         ]
     },
     "required_user_toolchain_values": [],

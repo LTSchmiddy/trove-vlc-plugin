@@ -15,10 +15,14 @@ namespace Scripting::ScriptTypes {
     }
 
     bool MovieScraperScript::basicSearch(std::string query, std::string* out) {
-        sol::protected_function_result result = searchFunc(query);
+        sol::protected_function_result result = basicSearchFunc(query);
 
         if (!result.valid()) {
-            PLOGE.printf("Error in script '%s' search function", _path.c_str());
+
+            sol::error err = result;
+            std::string what = err.what();
+
+            PLOGE.printf("Error in script '%s' function basic_search: '%s'", _path.c_str(), what.c_str());
             return false;
         }
         (*out) = result;
@@ -27,7 +31,7 @@ namespace Scripting::ScriptTypes {
 
     // Protected:
     bool MovieScraperScript::validate() {
-        if (!setAndValidateFunction("search", &searchFunc)) { return false; }
+        if (!setAndValidateFunction("basic_search", &basicSearchFunc)) { return false; }
 
         return true;
     }

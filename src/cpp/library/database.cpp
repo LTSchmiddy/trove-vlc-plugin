@@ -38,6 +38,7 @@ namespace Library {
                            "path VARCHAR,"
                            "title VARCHAR,"
                            "year INTEGER,"
+                           "desc VARCHAR,"
                            "PRIMARY KEY (source, path)"
                            ");");
     }

@@ -24,8 +24,8 @@ int main(int, char**)
     Logging::setup_logs();
     
     // Loading Media Sources:
-    MediaSource::load_sources(&Global::media_sources, MEDIA_SOURCES_PATH);
-    
+    Global::media_sources = new MediaSource::MediaSourceManager();
+    Global::media_sources->loadSources(MEDIA_SOURCES_PATH);    
     // Loading Library Database:
     Global::library_db = new Library::Database();
 
@@ -160,7 +160,7 @@ int main(int, char**)
 
     delete Global::library_db;
     Settings::save_settings(&Global::settings, SETTINGS_PATH);
-    MediaSource::save_sources(&Global::media_sources, MEDIA_SOURCES_PATH);
+    Global::media_sources->saveSources(MEDIA_SOURCES_PATH);    
 
     return 0;
 }

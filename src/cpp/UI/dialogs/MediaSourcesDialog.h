@@ -15,7 +15,7 @@ namespace UI {
     private:
         void drawMenuBar();
         void drawLocations();
-        void drawFileLocation(MediaSource::SourceType::FileSource* source);
+        void drawFileSource(MediaSource::SourceType::FileSource* source);
     };
 
     void create_media_sources_dialog();

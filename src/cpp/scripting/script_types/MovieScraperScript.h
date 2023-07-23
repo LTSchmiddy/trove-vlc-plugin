@@ -16,7 +16,7 @@ namespace Scripting::ScriptTypes {
         bool basicSearch(std::string query, std::string* out);
 
     protected:
-        sol::protected_function searchFunc;
+        sol::protected_function basicSearchFunc;
 
         bool validate() override;
 

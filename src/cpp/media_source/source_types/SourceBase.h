@@ -2,8 +2,13 @@
 
 #include <string>
 #include <vector>
+#include <thread>
+#include <mutex>
+#include <future>
+
 #include "ns_abbr/json.h"
 #include "scripting/script_types/MovieParserScript.h"
+#include "scripting/script_types/MovieScraperScript.h"
 
 namespace MediaSource::SourceType {
     enum class CONTENT_TYPE {
@@ -16,15 +21,26 @@ namespace MediaSource::SourceType {
     public:
         CONTENT_TYPE contentType = CONTENT_TYPE::MOVIES;
         std::string parserScriptPath;
+        std::string scraperScriptPath;
+        std::string sourceName;
+        std::recursive_mutex guard;
 
         void loadSettings(json& settings_json);
         void saveSettings(json& settings_json);
-        void startScan();
+        void startScanThread();
 
         virtual std::string getType();
+
+        inline bool isScanRunning() {
+            return _isScanRunning;
+        }
         
-    private:
-        virtual void _scan(Scripting::ScriptTypes::MovieParserScript* parser);
+    protected:
+        std::thread scanThread;
+        bool _isScanRunning = false;
+        // void scrape(std::string query, Scripting::ScriptTypes::MovieScraperScript* scraper);
+
+        virtual void scan(Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper);
         virtual void loadTypeSettings(json& settings_json);
         virtual void saveTypeSettings(json& settings_json);
     };
