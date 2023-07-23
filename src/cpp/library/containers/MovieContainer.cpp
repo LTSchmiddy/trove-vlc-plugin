@@ -41,12 +41,13 @@ namespace Library::Containers {
 
     bool MovieContainer::existsInDb() {
         sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString("SELECT COUNT(*) FROM movie WHERE source = ? AND path = ?;");
+        // sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString("SELECT COUNT(*) FROM movie;");
         sqlite3_bind_text(stmt, 1, source.c_str(), source.length(), NULL);
         sqlite3_bind_text(stmt, 2, path.c_str(), path.length(), NULL);
         
         int count = 0;
         while (sqlite3_step(stmt) == SQLITE_ROW) {
-            count = sqlite3_column_int(stmt, 1);
+            count = sqlite3_column_int(stmt, 0);
         }
 
         sqlite3_finalize(stmt);
