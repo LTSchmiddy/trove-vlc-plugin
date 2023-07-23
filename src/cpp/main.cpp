@@ -144,7 +144,9 @@ int main(int, char**)
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
         SDL_RenderPresent(Global::renderer);
 
+        // Run tasks intended for the end of the frame:
         Global::sub_window_handler->handleDeletion();
+        Global::media_sources->runSourceUpdates();
     }
 
     // Cleanup

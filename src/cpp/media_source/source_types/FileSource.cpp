@@ -14,25 +14,30 @@ namespace MediaSource::SourceType {
     }
 
     void FileSource::loadTypeSettings(json& settings_json) {
-        if (settings_json.contains("rootPath")) rootPath = settings_json["rootPath"].get<std::string>();
+        if (settings_json.contains("rootPath")) set_rootPath(settings_json["rootPath"].get<std::string>());
     }
     void FileSource::saveTypeSettings(json& settings_json) {
-        settings_json["rootPath"] = rootPath;
+        settings_json["rootPath"] = get_rootPath();
     }
 
-    fs::path FileSource::getRootPath() {
-        return fs::path(rootPath);
+    void FileSource::scan(std::stop_token stoken, std::string name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) {
+        scanDirectory(stoken, name, fs::path(get_rootPath()), parser, scraper);
     }
 
-    void FileSource::scan(Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) {
-        scanDirectory(fs::path(getRootPath()), parser, scraper);
-    }
-
-    void FileSource::scanDirectory(fs::path dir, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper){
+    void FileSource::scanDirectory(std::stop_token stoken, std::string name, fs::path dir, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper){
+        // Iterate source directory:
         for (const fs::directory_entry &entry : fs::directory_iterator(dir)) {
+            // We'll need re-check the stop token at multiple points, since some checks can take a while:
+            // Here's the first check, on a new iteration of the loop:
+            if (stoken.stop_requested()) { return; }
+
             if (entry.is_directory()) {
                 PLOGV.printf("Scanning Directory %s", entry.path().string().c_str());
-                scanDirectory(entry, parser, scraper);
+                scanDirectory(stoken, name, entry, parser, scraper);
+
+                // If the stop was called in a recursive call, return from here:
+                if (stoken.stop_requested()) { return; }
+
             } else if (entry.is_regular_file()) {
                 PLOGV.printf("Scanning File %s", entry.path().string().c_str());
                 
@@ -46,19 +51,24 @@ namespace MediaSource::SourceType {
                 }
 
                 // We're still operating on relative paths:
-                fs::path rel_path = fs::relative(entry.path(), getRootPath());
+                fs::path rel_path = fs::relative(entry.path(), get_rootPath());
                 Library::Containers::MovieContainer new_movie = Library::Containers::MovieContainer();
 
-                new_movie.source = sourceName;
+                new_movie.source = name;
                 new_movie.path = rel_path.string().c_str();
                 
+                // Check for a stop again before we do any db access:
+                if (stoken.stop_requested()) { return; }
+
                 // This will enable us to skip movies we've already scanned
                 if (!new_movie.existsInDb()) {
                     std::string search_params = parser->parsePath(rel_path.parent_path().string(), rel_path.filename().string());
 
+                    // Check for a stop again after scraping (expecially since scraping requires internet access and can be time consuming):
+                    if (stoken.stop_requested()) { return; }
                     std::string query_results_str;
                     scraper->basicSearch(search_params, &query_results_str);
-
+                
                     PLOGD << query_results_str;
                     json query_results_json = json::parse(query_results_str);
 

@@ -24,6 +24,35 @@ bool MediaSourceManager::renameMediaSource(std::string old_name, std::string new
     return true;
 }
 
+bool MediaSourceManager::enqueueSourceUpdate(std::string name) {
+    // Make sure we don't queue any source names that don't exist.
+    if (mediaSources.contains(name)) {
+        updateQueue.push_back(name);
+        return true;
+    }
+
+    return false;
+}
+
+void MediaSourceManager::runSourceUpdates() {
+    // This will be true once the list is empty:
+    while (updateQueue.begin() != updateQueue.end()) {
+        // Get and remove the first entry in the list:
+        std::string name = updateQueue.front();
+        updateQueue.pop_front();
+
+        //Get and update the source:
+        auto source = mediaSources.at(name);
+        if (!source->isScanRunning()) {
+            source->startScanThread(name);
+            PLOGI.printf("Starting scan of media source '%s'.", name.c_str());
+        }
+        else {
+            PLOGI.printf("Media source '%s' is already scanning.", name.c_str());
+        }
+    }
+}
+
 // Serialization:
 void MediaSourceManager::loadSources(fs::path file_path) {
     std::ifstream in_file(file_path);

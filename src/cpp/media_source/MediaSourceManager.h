@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <list>
 #include <string>
 #include <memory>
 #include "ns_abbr/fs.h"
@@ -15,6 +16,10 @@ namespace MediaSource {
         ~MediaSourceManager();
 
         bool renameMediaSource(std::string old_name, std::string new_name);
+        bool enqueueSourceUpdate(std::string name);
+        void runSourceUpdates();
+
+        // Serialization;
         void loadSources(fs::path file_path);
         void saveSources(fs::path file_path);
 
@@ -25,5 +30,6 @@ namespace MediaSource {
 
     private:
         std::map<std::string, std::shared_ptr<MediaSource::SourceType::SourceBase>> mediaSources;
+        std::list<std::string> updateQueue;
     };
 }
