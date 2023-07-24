@@ -2,6 +2,7 @@
 
 #include <map>
 #include <list>
+#include <fstream>
 
 #include <plog/Log.h>
 
@@ -10,6 +11,8 @@
 #include <curlpp/Options.hpp>
 #include <curlpp/Exception.hpp>
 #include <curl/curl.h>
+
+#include "ns_abbr/fs.h"
 
 namespace Scripting::Extensions::WebRequests {
     
@@ -86,11 +89,36 @@ namespace Scripting::Extensions::WebRequests {
         return std::string(response.str());
     }
 
+    static void _lua_download_file(std::string address, std::string save_path, std::list<std::string> header) {
+        // Create request:
+        curlpp::Cleanup clean;
+        curlpp::Easy r;
+        r.setOpt(new curlpp::options::Url(address));
+        r.setOpt(new curlpp::options::HttpHeader(header));
+
+        fs::path save_parent = fs::path(save_path).parent_path();
+        // Make sure the output directory exist:
+        if (!fs::exists(save_parent)) {
+            fs::create_directories(save_parent);
+        }
+
+        // Generate output stream:
+        std::ofstream response(save_path, std::ios::binary);
+        
+        // r.setOpt(new curlpp::options::WriteFile());
+        r.setOpt(new curlpp::options::WriteStream(&response));
+        
+        // Perform request:
+        r.perform();
+        // return true;
+    }
+
     void create_lua_web_requests_module (sol::state_view* lua) {
         sol::table requests_table = lua->create_named_table("web_requests");
 
         requests_table.set_function("post", &_lua_post_request);
         requests_table.set_function("get", &_lua_get_request);
         requests_table.set_function("get_args", &_lua_get_request_args);
+        requests_table.set_function("download_file", &_lua_download_file);
     }
 }

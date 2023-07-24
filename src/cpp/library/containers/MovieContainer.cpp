@@ -15,7 +15,7 @@ namespace Library::Containers {
 
     // Return true it load was successful:
     bool MovieContainer::reloadFromDb() {
-        sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString("SELECT title, year, desc FROM movie WHERE source = ? AND path = ?;");
+        sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString("SELECT title, year, desc, poster_path FROM movie WHERE source = ? AND path = ?;");
         sqlite3_bind_text(stmt, 1, source.c_str(), source.length(), NULL);
         sqlite3_bind_text(stmt, 2, path.c_str(), path.length(), NULL);
         
@@ -26,6 +26,7 @@ namespace Library::Containers {
             title = (char*)sqlite3_column_text(stmt, 0);
             date = (char*)sqlite3_column_text(stmt, 1);
             desc = (char*)sqlite3_column_text(stmt, 2);
+            poster_path = (char*)sqlite3_column_text(stmt, 3);
         }
 
         sqlite3_finalize(stmt);
@@ -58,14 +59,15 @@ namespace Library::Containers {
     bool MovieContainer::writeToDb() {
         if (existsInDb()) {
             sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString(
-                "UPDATE movie SET title = ?, year = ?, desc = ? WHERE source = ? AND path = ?;"
+                "UPDATE movie SET title = ?, year = ?, desc = ?, poster_path = ? WHERE source = ? AND path = ?;"
             );
             
             sqlite3_bind_text(stmt, 1, title.c_str(), title.length(), NULL);
             sqlite3_bind_text(stmt, 2, date.c_str(), date.length(), NULL);
             sqlite3_bind_text(stmt, 3, desc.c_str(), desc.length(), NULL);
-            sqlite3_bind_text(stmt, 4, source.c_str(), source.length(), NULL);
-            sqlite3_bind_text(stmt, 5, path.c_str(), path.length(), NULL);
+            sqlite3_bind_text(stmt, 4, poster_path.c_str(), poster_path.length(), NULL);
+            sqlite3_bind_text(stmt, 5, source.c_str(), source.length(), NULL);
+            sqlite3_bind_text(stmt, 6, path.c_str(), path.length(), NULL);
 
             bool retVal = Global::library_db->simpleRunStatement(stmt);
             sqlite3_finalize(stmt);
@@ -73,13 +75,14 @@ namespace Library::Containers {
 
         } else {
             sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString(
-                "INSERT INTO movie (source, path, title, year, desc) VALUES (?, ?, ?, ?, ?);"
+                "INSERT INTO movie (source, path, title, year, desc, poster_path) VALUES (?, ?, ?, ?, ?, ?);"
             );
             sqlite3_bind_text(stmt, 1, source.c_str(), source.length(), NULL);
             sqlite3_bind_text(stmt, 2, path.c_str(), path.length(), NULL);
             sqlite3_bind_text(stmt, 3, title.c_str(), title.length(), NULL);
             sqlite3_bind_text(stmt, 4, date.c_str(), date.length(), NULL);
             sqlite3_bind_text(stmt, 5, desc.c_str(), desc.length(), NULL);
+            sqlite3_bind_text(stmt, 6, poster_path.c_str(), poster_path.length(), NULL);
             
             bool retVal = Global::library_db->simpleRunStatement(stmt);
             sqlite3_finalize(stmt);

@@ -10,7 +10,7 @@ function string_trim(s)
     return string.gsub(s,"^%s*(.-)%s*$", "%1")
 end
 
-log.debug({})
+log.debug("Hello")
 
 -- REQUIRED FUNCTIONS
 function year_parse_method(str, retVal)

@@ -5,7 +5,8 @@
         "log",
         "web_requests",
         "cjson",
-        "regex"
+        "regex",
+        "config_access"
     ],
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "files.associations": {

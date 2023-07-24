@@ -75,6 +75,7 @@ namespace MediaSource::SourceType {
                     if (query_results_json.contains("title")) new_movie.title = query_results_json["title"].get<std::string>();
                     if (query_results_json.contains("date")) new_movie.date = query_results_json["date"].get<std::string>();
                     if (query_results_json.contains("desc")) new_movie.desc = query_results_json["desc"].get<std::string>();
+                    if (query_results_json.contains("poster_path")) new_movie.poster_path = query_results_json["poster_path"].get<std::string>();
 
                     new_movie.writeToDb();
                 }

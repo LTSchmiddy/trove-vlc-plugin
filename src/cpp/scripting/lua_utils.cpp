@@ -1,4 +1,5 @@
 #include "lua_utils.h"
+#include "extensions/lua_config_access.h"
 #include "extensions/lua_log.h"
 #include "extensions/lua_web_requests.h"
 #include "extensions/lua_json.h"
@@ -20,6 +21,7 @@ namespace Scripting::Utils {
             sol::lib::utf8
         );
 
+        Scripting::Extensions::ConfigAccess::create_lua_config_access_module(lua);
         Scripting::Extensions::Logging::create_lua_log_module(lua);
         Scripting::Extensions::Json::create_lua_json_module(lua, true);
         Scripting::Extensions::WebRequests::create_lua_web_requests_module(lua);

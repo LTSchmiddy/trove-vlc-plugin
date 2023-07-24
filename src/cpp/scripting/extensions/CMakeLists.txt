@@ -1,5 +1,7 @@
 target_sources(${TARGET_NAME}
     PUBLIC
+    "./lua_config_access.h"
+    "./lua_config_access.cpp"
     "./lua_json.h"
     "./lua_json.cpp"
     "./lua_log.h"

@@ -41,9 +41,14 @@ namespace Settings{
         // Loading library:
         if (root_settings_json.contains("library")) {
             json library_settings_json = root_settings_json["library"];
-
             if (library_settings_json.contains("path")) root_settings->library.path = library_settings_json["path"].get<std::string>();
             if (library_settings_json.contains("reset_on_load")) root_settings->library.reset_on_load = library_settings_json["reset_on_load"].get<bool>();
+        }
+
+        // Loading assets:
+        if (root_settings_json.contains("assets")) {
+            json asset_settings_json = root_settings_json["assets"];
+            if (asset_settings_json.contains("root_path")) root_settings->assets.root_path = asset_settings_json["root_path"].get<std::string>();
         }
     }
 
@@ -65,6 +70,11 @@ namespace Settings{
         library_settings_json["path"] = root_settings->library.path;
         library_settings_json["reset_on_load"] = root_settings->library.reset_on_load;
         root_settings_json["library"] = library_settings_json;
+
+                // Database settings:
+        json asset_settings_json;
+        asset_settings_json["root_path"] = root_settings->assets.root_path;
+        root_settings_json["assets"] = asset_settings_json;
 
 
         std::ofstream out_file(file_path);

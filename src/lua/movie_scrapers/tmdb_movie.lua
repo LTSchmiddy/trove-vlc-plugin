@@ -35,9 +35,15 @@ function basic_search(query_json)
     -- Since we pulled the id straight from another response, we can assume it's valid.
     local movie_info = cjson.decode(movie_info_json)
 
+    local poster_save_path = config_access.get_asset_root() .. "/tmdb_movies_posters" .. movie_info.poster_path
+    log.debug(poster_save_path)
+    web_requests.download_file("https://image.tmdb.org/t/p/original" .. movie_info.poster_path, poster_save_path, TMBD_REQUEST_HEADER)
+
     return cjson.encode ({
         title = movie_info.original_title,
         date = movie_info.release_date,
-        desc = movie_info.overview
+        desc = movie_info.overview,
+        id = movie_info.id,
+        poster_path = poster_save_path
     }) 
 end

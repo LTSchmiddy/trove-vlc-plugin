@@ -39,6 +39,7 @@ namespace Library {
                            "title VARCHAR,"
                            "year INTEGER,"
                            "desc VARCHAR,"
+                           "poster_path VARCHAR,"
                            "PRIMARY KEY (source, path)"
                            ");");
     }

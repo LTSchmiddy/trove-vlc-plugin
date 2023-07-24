@@ -11,6 +11,7 @@ namespace Library::Containers {
         std::string title;
         std::string date;
         std::string desc;
+        std::string poster_path;
 
         MovieContainer();
         MovieContainer(std::string p_source, std::string p_path, bool auto_load = true, bool* found = NULL);

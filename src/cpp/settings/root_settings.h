@@ -31,6 +31,9 @@ namespace Settings {
             std::string path = "./library.db";
             bool reset_on_load = true;
         } library;
+        struct AssetSettings {
+            std::string root_path = "./assets";
+        } assets;
     };
 
     void load_settings(RootSettings* settings, fs::path file);

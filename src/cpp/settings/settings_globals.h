@@ -1,3 +1,5 @@
+#pragma once
+
 #include "root_settings.h"
 
 namespace Global {
