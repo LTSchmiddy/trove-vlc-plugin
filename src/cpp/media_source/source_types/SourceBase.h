@@ -42,6 +42,7 @@ namespace MediaSource::SourceType {
         bool stopScanThread();
 
         virtual std::string getType();
+        virtual std::string getUriPrefix();
 
         inline bool isScanRunning() {
             return _isScanRunning;

@@ -4,6 +4,7 @@
 namespace MediaSource::SourceType {
 
     std::string SourceBase::getType() { return "base"; }
+    std::string SourceBase::getUriPrefix() { return ""; }
     void SourceBase::scan(std::stop_token stoken, std::string name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) {}
     void SourceBase::loadTypeSettings(json& settings_json) {}
     void SourceBase::saveTypeSettings(json& settings_json) {}

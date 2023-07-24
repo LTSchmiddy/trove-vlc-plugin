@@ -1,7 +1,11 @@
+#include <fstream>
+
 #include <plog/Log.h>
 
 #include "database.h"
 #include "settings/settings_globals.h"
+#include "media_source/source_globals.h"
+// #include "media_source/source_types/FileSource.h"
 
 namespace Library {
     Database::Database() {
@@ -37,11 +41,21 @@ namespace Library {
                            "source VARCHAR,"
                            "path VARCHAR,"
                            "title VARCHAR,"
-                           "year INTEGER,"
+                           "date INTEGER,"
                            "desc VARCHAR,"
                            "poster_path VARCHAR,"
                            "PRIMARY KEY (source, path)"
                            ");");
+    }
+    // Error Logging:
+    void Database::logSqlCompilationError(int prepare_result, std::string sql){
+        PLOGE << std::format("Error on compilation of SQL code.\nResult Code: {}\nSQL Statement: {}\nError: {}\n\n", prepare_result,
+                                    sql, sqlite3_errmsg(conn));
+    }
+
+    void Database::logSqlExecutionError(int step_result, sqlite3_stmt* stmt) {
+        PLOGE << std::format("Error on execution of SQL code.\nResult Code: {}\nSQL Statement: {}\nError: {}\n\n", step_result,
+                                    sqlite3_sql(stmt), sqlite3_errmsg(conn));
     }
 
         
@@ -96,15 +110,38 @@ namespace Library {
         return stmt;
     }
 
-    // Error Logging:
-    void Database::logSqlCompilationError(int prepare_result, std::string sql){
-        PLOGE << std::format("Error on compilation of SQL code.\nResult Code: {}\nSQL Statement: {}\nError: {}\n\n", prepare_result,
-                                    sql, sqlite3_errmsg(conn));
+    // Where the magic happens: Export the library to something that the Trove SD module in VLC can read from:
+    json Database::dumpToJson() {
+        json retVal;
+
+        // Load movies:
+        json movies_json = json::array();
+        sqlite3_stmt* stmt = simpleStatementFromString("SELECT source, path, title, date, desc, poster_path FROM movie ORDER BY title;");
+        
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            json movie_entry;
+            std::string source_name = (char*)sqlite3_column_text(stmt,0);
+            std::string path = (char*)sqlite3_column_text(stmt, 1);
+
+            auto source = Global::media_sources->getSourceMap()->at(source_name);
+            movie_entry["location"] = source->getUriPrefix() + "/" + path;
+
+            movie_entry["title"] = (char*)sqlite3_column_text(stmt, 2);
+            movie_entry["date"] = (char*)sqlite3_column_text(stmt, 3);
+            movie_entry["desc"] = (char*)sqlite3_column_text(stmt, 4);
+            movie_entry["poster_path"] = fs::absolute((char*)sqlite3_column_text(stmt, 5));
+            movies_json.push_back(movie_entry);
+        }
+
+        retVal["movies"] = movies_json;
+        return retVal;
     }
 
-    void Database::logSqlExecutionError(int step_result, sqlite3_stmt* stmt) {
-        PLOGE << std::format("Error on execution of SQL code.\nResult Code: {}\nSQL Statement: {}\nError: {}\n\n", step_result,
-                                    sqlite3_sql(stmt), sqlite3_errmsg(conn));
-    }
+    void Database::exportToJson(std::string out_path) {
+        json exported = dumpToJson();
 
+        std::ofstream out_file(out_path);
+        out_file << exported.dump(4);
+        out_file.close();
+    }
 }

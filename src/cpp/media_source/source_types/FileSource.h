@@ -10,6 +10,7 @@ namespace MediaSource::SourceType {
     public:
         // Override functions:
         std::string getType() override;
+        std::string getUriPrefix() override;
         void loadTypeSettings(json& settings_json) override;
         void saveTypeSettings(json& settings_json) override;
         void scan(std::stop_token stoken, std::string name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) override;

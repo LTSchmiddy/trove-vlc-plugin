@@ -15,7 +15,7 @@ namespace Library::Containers {
 
     // Return true it load was successful:
     bool MovieContainer::reloadFromDb() {
-        sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString("SELECT title, year, desc, poster_path FROM movie WHERE source = ? AND path = ?;");
+        sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString("SELECT title, date, desc, poster_path FROM movie WHERE source = ? AND path = ?;");
         sqlite3_bind_text(stmt, 1, source.c_str(), source.length(), NULL);
         sqlite3_bind_text(stmt, 2, path.c_str(), path.length(), NULL);
         
@@ -59,7 +59,7 @@ namespace Library::Containers {
     bool MovieContainer::writeToDb() {
         if (existsInDb()) {
             sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString(
-                "UPDATE movie SET title = ?, year = ?, desc = ?, poster_path = ? WHERE source = ? AND path = ?;"
+                "UPDATE movie SET title = ?, date = ?, desc = ?, poster_path = ? WHERE source = ? AND path = ?;"
             );
             
             sqlite3_bind_text(stmt, 1, title.c_str(), title.length(), NULL);
@@ -75,7 +75,7 @@ namespace Library::Containers {
 
         } else {
             sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString(
-                "INSERT INTO movie (source, path, title, year, desc, poster_path) VALUES (?, ?, ?, ?, ?, ?);"
+                "INSERT INTO movie (source, path, title, date, desc, poster_path) VALUES (?, ?, ?, ?, ?, ?);"
             );
             sqlite3_bind_text(stmt, 1, source.c_str(), source.length(), NULL);
             sqlite3_bind_text(stmt, 2, path.c_str(), path.length(), NULL);

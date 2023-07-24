@@ -1,6 +1,7 @@
 #include "main_window.h"
 #include "globals.h"
 #include "ui/dialogs/MediaSourcesDialog.h"
+#include "library/library_globals.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -29,7 +30,10 @@ namespace UI {
         ImGui::SetNextWindowPos(margins);
         ImGui::SetNextWindowSize(window_dimens);
         ImGui::Begin("primary_menu_window", NULL, flags);
-        drawParserTestInterface();
+
+        if(ImGui::Button("Export Library")) {
+            Global::library_db->exportToJson("exported.json");
+        }
         ImGui::End();
     }
 

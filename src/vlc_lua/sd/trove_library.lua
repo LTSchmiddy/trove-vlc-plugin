@@ -4,11 +4,13 @@
 lazily_loaded = false
 io = nil
 json = nil
+export_location = "D:\\git-repos\\VLC_PLUGINS\\trove-vlc-plugin\\cwd\\exported.json"
 
 function lazy_load()
     if lazily_loaded then return nil end
     json = require("json")
     io = require("io")
+    -- export_location = 
     lazily_loaded = true
 end
 
@@ -40,14 +42,21 @@ end
 function main()
     lazy_load()
 
-    -- local test_code = io.popen("test.exe", "r")
-    -- local result = test_code:read("*a")
-    -- vlc.msg.dbg(result)
+    -- Load the data from disk:
+    local f = io.open(export_location)
+    local json_str = f:read("*a")
+    vlc.msg.dbg(json_str)
+    library = json.decode(json_str)
 
-    local f = io.open("hello.txt")
-    vlc.msg.dbg(f:read("*a"))
+    -- Process Movies:
+    local movie_node = vlc.sd.add_node({title="Movies"})
+    for index, movie in ipairs(library.movies) do
+        -- local loc = vlc.strings.encode_uri_component(movie.location)
+        local loc = vlc.strings.decode_uri(movie.location)
+        vlc.msg.dbg(loc)
+        movie_node:add_subitem({title = movie.title, description = movie.desc, date=movie.date, path=loc, arturl=vlc.strings.make_uri(movie.poster_path)})
+    end
 
-    local movie_node = vlc.sd.add_node({title="Movies", arturl=vlc.strings.make_uri("art.jpg")})
     local show_node = vlc.sd.add_node({title="TV Shows"})
 
     -- Do stuff here

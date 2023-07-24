@@ -12,6 +12,13 @@ namespace MediaSource::SourceType {
     std::string FileSource::getType() {
         return "file";
     }
+    std::string FileSource::getUriPrefix() {
+#ifdef _WIN32
+        return "file:///" + get_rootPath();
+#else
+        return "file://" + get_rootPath();
+#endif
+    }
 
     void FileSource::loadTypeSettings(json& settings_json) {
         if (settings_json.contains("rootPath")) set_rootPath(settings_json["rootPath"].get<std::string>());
