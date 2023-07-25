@@ -1,11 +1,11 @@
 ---@diagnostic disable: lowercase-global
 
--- Lazy Loading. Required implementation for Service Discovery
+-- Lazy Loading. Required implementation for Service Discovery:
 lazily_loaded = false
+-- Libraries:
 io = nil
 json = nil
 trove_settings = nil
-export_location = "D:\\git-repos\\VLC_PLUGINS\\trove-vlc-plugin\\cwd\\exported.json"
 
 function lazy_load()
     if lazily_loaded then return nil end
@@ -15,6 +15,7 @@ function lazy_load()
     lazily_loaded = true
 end
 
+-- VLC Functions:
 function descriptor()
     return {
         title = "Trove Media Library",
@@ -30,7 +31,7 @@ end
 function main()
     lazy_load()
     -- Load the data from disk:
-    local f = io.open(export_location)
+    local f = io.popen(trove_dump_cmd())
     if f == nil then 
         return 
     end
@@ -52,8 +53,9 @@ function main()
 
     -- Do stuff here
 end
-  
-  -- function search(query)
-    
-    -- Do stuff here
-  -- end
+
+-- Internal Functions:
+
+function trove_dump_cmd()
+    return "\"" .. trove_settings.trove_cli_location .. "\" -d"
+end

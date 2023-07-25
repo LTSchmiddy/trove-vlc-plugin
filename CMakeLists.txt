@@ -77,6 +77,7 @@ function(link_target VAR_TARGET_NAME)
 
 endfunction()
 
+# Used to add source files to both trove-manager and trove-cli
 function(add_sources_to_all_projects P_IFACE)
     # message(${ARGN})
 
