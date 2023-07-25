@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(test VERSION 0.1.0)
+project(trove VERSION 0.1.0)
 
 set(TARGET_NAME trove-manager)
+set(CLI_TARGET_NAME trove-cli)
 
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
@@ -13,66 +14,76 @@ set (CMAKE_CXX_STANDARD 20)
 include_directories(${TRIPLET_INCLUDE_DIRS}) 
 
 add_executable(${TARGET_NAME})
+add_executable(${CLI_TARGET_NAME})
 
-# Adding SDL2
-find_package(SDL2 CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME}
-    PRIVATE
-    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-)
+target_compile_definitions(${CLI_TARGET_NAME} PRIVATE CLI_BUILD=1)
 
-# Adding SDL2_image
-find_package(SDL2_image CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
+function(link_target VAR_TARGET_NAME)
+    # Adding SDL2
+    find_package(SDL2 CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME}
+        PRIVATE
+        $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+        $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    )
 
-# Adding Imgui
-find_package(imgui CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE imgui::imgui)
+    # Adding SDL2_image
+    find_package(SDL2_image CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
 
-# Adding nlohmann_json
-find_package(nlohmann_json CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE nlohmann_json::nlohmann_json)
+    # Adding Imgui
+    find_package(imgui CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE imgui::imgui)
 
-# Adding Sqlite3
-find_package(unofficial-sqlite3 CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE unofficial::sqlite3::sqlite3)
+    # Adding nlohmann_json
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
-# Adding Lua:
-find_package(Lua REQUIRED)
-target_include_directories(${TARGET_NAME} PRIVATE ${LUA_INCLUDE_DIR})
-target_link_libraries(${TARGET_NAME} PRIVATE ${LUA_LIBRARIES})
+    # Adding Sqlite3
+    find_package(unofficial-sqlite3 CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE unofficial::sqlite3::sqlite3)
 
-# Adding Sol2
-find_package(sol2 CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE sol2)
+    # Adding Lua:
+    find_package(Lua REQUIRED)
+    target_include_directories(${VAR_TARGET_NAME} PRIVATE ${LUA_INCLUDE_DIR})
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE ${LUA_LIBRARIES})
 
-# Adding CxxOpts
-find_package(cxxopts CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE cxxopts::cxxopts)
+    # Adding Sol2
+    find_package(sol2 CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE sol2)
 
-# Adding Plog:
-find_package(plog CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE plog::plog)
+    # Adding CxxOpts
+    find_package(cxxopts CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE cxxopts::cxxopts)
 
-# Adding Curlpp:
-find_package(unofficial-curlpp CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE unofficial::curlpp::curlpp)
+    # Adding Plog:
+    find_package(plog CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE plog::plog)
 
-# Adding TinyFileDialogs:
-find_package(tinyfiledialogs CONFIG REQUIRED)
-target_link_libraries(${TARGET_NAME} PRIVATE tinyfiledialogs::tinyfiledialogs)
+    # Adding Curlpp:
+    find_package(unofficial-curlpp CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE unofficial::curlpp::curlpp)
+
+    # Adding TinyFileDialogs:
+    find_package(tinyfiledialogs CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE tinyfiledialogs::tinyfiledialogs)
+
+    set_target_properties(${VAR_TARGET_NAME}
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "./arc/"
+        LIBRARY_OUTPUT_DIRECTORY "./lib/"
+        RUNTIME_OUTPUT_DIRECTORY "./bin/"
+    )
+
+endfunction()
+
+link_target(${TARGET_NAME})
+link_target(${CLI_TARGET_NAME})
 
 # Adding sourcecode:
 include_directories("./src/cpp")
 add_subdirectory("./src/cpp")
 
-set_target_properties(${TARGET_NAME}
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "./arc/"
-    LIBRARY_OUTPUT_DIRECTORY "./lib/"
-    RUNTIME_OUTPUT_DIRECTORY "./bin/"
-)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

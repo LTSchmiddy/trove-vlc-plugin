@@ -7,3 +7,13 @@ target_sources(${TARGET_NAME}
     "./ScriptBase.h"
     "./ScriptBase.cpp"
 )
+
+target_sources(${CLI_TARGET_NAME}
+    PUBLIC
+    "./MovieParserScript.h"
+    "./MovieParserScript.cpp"
+    "./MovieScraperScript.h"
+    "./MovieScraperScript.cpp"
+    "./ScriptBase.h"
+    "./ScriptBase.cpp"
+)

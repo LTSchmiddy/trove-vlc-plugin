@@ -9,6 +9,17 @@ target_sources(${TARGET_NAME}
     "./main.cpp"
 )
 
+target_sources(${CLI_TARGET_NAME}
+    PUBLIC
+    "./gfx_headers.h"
+    "./globals.h"
+    "./app_globals.h"
+
+    "./logging.h"
+    "./logging.cpp"
+    "./cli_main.cpp"
+)
+
 add_subdirectory("./assets")
 add_subdirectory("./library")
 add_subdirectory("./media_source")

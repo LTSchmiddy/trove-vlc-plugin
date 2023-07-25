@@ -14,8 +14,8 @@ namespace Global {
     inline SDL_Window* sdl2_window = NULL;
     inline SDL_Renderer* renderer = NULL;
 
+#ifndef CLI_BUILD
     inline UI::MainWindow* main_window = NULL;
-
     inline UI::SubWindowHandler* sub_window_handler = NULL;
-    
+#endif
 }

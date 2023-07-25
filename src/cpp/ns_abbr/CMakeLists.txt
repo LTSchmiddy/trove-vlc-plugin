@@ -5,3 +5,9 @@ target_sources(${TARGET_NAME}
     "./fs.h"
     "./json.h"
 )
+
+target_sources(${CLI_TARGET_NAME}
+    PUBLIC
+    "./fs.h"
+    "./json.h"
+)
