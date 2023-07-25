@@ -8,8 +8,8 @@
 -- Linux:   ~/.local/share/vlc/lua/extensions/basic.lua
 
 io = require("io")
-
-
+json = require("json")
+trove_settings = require("trove_settings")
 app = nil
 
 function descriptor()
@@ -18,7 +18,7 @@ function descriptor()
         version = "1.0",
         author = "",
         url = 'http://',
-        shortdesc = "short description",
+        shortdesc = "Trove Media Library",
         description = "full description",
         capabilities = {"menu", "input-listener", "meta-listener", "playing-listener"}
     }
@@ -29,17 +29,21 @@ function activate()
     -- for example activation of extension opens custom dialog box:
     -- create_dialog()
     vlc.msg.dbg("Opening Trove Manager...")
-    lc = require("luachild")
- 
-    
-
+    vlc.msg.dbg(vlc.config.configdir())
+    vlc.msg.dbg(tostring(trove_settings))
+    vlc.msg.dbg(tostring(trove_settings.get_config_path()))
+    -- trove_settings.config_info = vlc.config.configdir()
+    -- vlc.msg.dbg(vlc.config.userdatadir())
+    -- vlc.msg.dbg(vlc.config.configdir())
 end
+
 function deactivate()
     -- what should be done on deactivation of extension
     if app ~= nil then
         app:close()
     end
 end
+
 function close()
     -- function triggered on dialog box close event
     -- for example to deactivate extension on dialog box close:
@@ -50,10 +54,12 @@ function input_changed()
     -- related to capabilities={"input-listener"} in descriptor()
     -- triggered by Start/Stop media input event
 end
+
 function playing_changed()
     -- related to capabilities={"playing-listener"} in descriptor()
     -- triggered by Pause/Play madia input event
 end
+
 function meta_changed()
     -- related to capabilities={"meta-listener"} in descriptor()
     -- triggered by available media input meta data?
@@ -64,6 +70,7 @@ function menu()
     -- menu occurs in VLC menu: View > Extension title > ...
     return {"Menu item #1", "Menu item #2", "Menu item #3"}
 end
+
 -- Function triggered when an element from the menu is selected
 function trigger_menu(id)
     if(id == 1) then
@@ -75,9 +82,7 @@ function trigger_menu(id)
     end
 end
 
-
 -- Custom part, Dialog box example: -------------------------
-
 greeting = "Welcome!<br />"  -- example of global variable
 function create_dialog()
     w = vlc.dialog("VLC Extension - Dialog box example")
@@ -86,12 +91,14 @@ function create_dialog()
     w3 = w:add_button("Action!",click_Action, 1, 3, 1, 1)
     w4 = w:add_button("Clear",click_Clear, 2, 3, 1, 1)
 end
+
 function click_Action()
     local input_string = w1:get_text()  -- local variable
     local output_string = w2:get_text() .. input_string .. "<br />"
     --w1:set_text("")
     w2:set_text(output_string)
 end
+
 function click_Clear()
     w2:set_text("")
 end

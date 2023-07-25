@@ -4,27 +4,15 @@
 lazily_loaded = false
 io = nil
 json = nil
+trove_settings = nil
 export_location = "D:\\git-repos\\VLC_PLUGINS\\trove-vlc-plugin\\cwd\\exported.json"
 
 function lazy_load()
     if lazily_loaded then return nil end
     json = require("json")
     io = require("io")
-    -- export_location = 
+    trove_settings = require("trove_settings")
     lazily_loaded = true
-end
-
-function read_data(uri)
-    local stream = vlc.stream(uri)
-    local string = ""
-    local line   = ""
-
-    repeat
-      line = stream:readline()
-      if line then string = string .. line end
-    until line == nil
-
-    return string
 end
 
 function descriptor()
@@ -41,10 +29,13 @@ end
 
 function main()
     lazy_load()
-
     -- Load the data from disk:
     local f = io.open(export_location)
+    if f == nil then 
+        return 
+    end
     local json_str = f:read("*a")
+
     vlc.msg.dbg(json_str)
     library = json.decode(json_str)
 
