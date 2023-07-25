@@ -1,12 +1,4 @@
-target_sources(${TARGET_NAME}
-    PUBLIC
-    "./asset_globals.h"
-    
-    "./AssetManager.h"
-    "./AssetManager.cpp"
-)
-
-target_sources(${CLI_TARGET_NAME}
+add_sources_to_all_projects(
     PUBLIC
     "./asset_globals.h"
     

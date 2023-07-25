@@ -1,14 +1,4 @@
-target_sources(${TARGET_NAME}
-    PUBLIC
-    "./MovieParserScript.h"
-    "./MovieParserScript.cpp"
-    "./MovieScraperScript.h"
-    "./MovieScraperScript.cpp"
-    "./ScriptBase.h"
-    "./ScriptBase.cpp"
-)
-
-target_sources(${CLI_TARGET_NAME}
+add_sources_to_all_projects(
     PUBLIC
     "./MovieParserScript.h"
     "./MovieParserScript.cpp"

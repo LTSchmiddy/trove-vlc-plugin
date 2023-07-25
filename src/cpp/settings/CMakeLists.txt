@@ -1,12 +1,4 @@
-target_sources(${TARGET_NAME}
-    PUBLIC
-    "./settings_globals.h"
-
-    "./root_settings.h"
-    "./root_settings.cpp"
-)
-
-target_sources(${CLI_TARGET_NAME}
+add_sources_to_all_projects(
     PUBLIC
     "./settings_globals.h"
 

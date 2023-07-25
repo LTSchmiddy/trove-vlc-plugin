@@ -1,4 +1,4 @@
-target_sources(${TARGET_NAME}
+add_sources_to_all_projects(
     PUBLIC
     "./gfx_headers.h"
     "./globals.h"
@@ -6,17 +6,15 @@ target_sources(${TARGET_NAME}
 
     "./logging.h"
     "./logging.cpp"
+)
+
+target_sources(${TARGET_NAME}
+    PUBLIC
     "./main.cpp"
 )
 
 target_sources(${CLI_TARGET_NAME}
     PUBLIC
-    "./gfx_headers.h"
-    "./globals.h"
-    "./app_globals.h"
-
-    "./logging.h"
-    "./logging.cpp"
     "./cli_main.cpp"
 )
 

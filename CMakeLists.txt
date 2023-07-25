@@ -77,13 +77,28 @@ function(link_target VAR_TARGET_NAME)
 
 endfunction()
 
+function(add_sources_to_all_projects P_IFACE)
+    # message(${ARGN})
+
+    # Adding to Manager:
+    target_sources(${TARGET_NAME}
+        ${P_IFACE}
+        ${ARGN}
+    )
+    
+    # Adding to CLI:
+    target_sources(${CLI_TARGET_NAME}
+        ${P_IFACE}
+        ${ARGN}
+    )
+endfunction()
+
 link_target(${TARGET_NAME})
 link_target(${CLI_TARGET_NAME})
 
 # Adding sourcecode:
 include_directories("./src/cpp")
 add_subdirectory("./src/cpp")
-
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

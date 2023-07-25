@@ -1,12 +1,6 @@
 # Easy access to libraries with long namespaces:
 
-target_sources(${TARGET_NAME}
-    PUBLIC
-    "./fs.h"
-    "./json.h"
-)
-
-target_sources(${CLI_TARGET_NAME}
+add_sources_to_all_projects(
     PUBLIC
     "./fs.h"
     "./json.h"
