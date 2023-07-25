@@ -18,6 +18,7 @@ add_executable(${CLI_TARGET_NAME})
 
 target_compile_definitions(${CLI_TARGET_NAME} PRIVATE CLI_BUILD=1)
 
+
 function(link_target VAR_TARGET_NAME)
     # Adding SDL2
     find_package(SDL2 CONFIG REQUIRED)

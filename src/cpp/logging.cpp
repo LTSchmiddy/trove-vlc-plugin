@@ -7,12 +7,13 @@
 
 #include "logging.h"
 #include "settings/settings_globals.h"
+#include "assets/asset_globals.h"
 
 namespace Logging
 {
     void setup_logs() {
 #ifndef CLI_BUILD
-        static plog::RollingFileAppender<plog::CsvFormatter> fileAppender("log.csv", 24000, 1); // Create the 1st appender.
+        static plog::RollingFileAppender<plog::CsvFormatter> fileAppender(Global::asset_manager->getDataPath("log.csv").string().c_str(), 24000, 1); // Create the 1st appender.
         static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender; // Create the 2nd appender.
         plog::init((plog::Severity)Global::settings.log_level, &fileAppender).addAppender(&consoleAppender); // Initialize the logger with the both appenders.
 #else

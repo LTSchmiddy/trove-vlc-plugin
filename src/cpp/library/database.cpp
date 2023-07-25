@@ -5,13 +5,14 @@
 #include "database.h"
 #include "settings/settings_globals.h"
 #include "media_source/source_globals.h"
+#include "assets/asset_globals.h"
 // #include "media_source/source_types/FileSource.h"
 
 namespace Library {
     Database::Database() {
         int db_flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX |  SQLITE_OPEN_CREATE;
 
-        int startup_result = sqlite3_open_v2(Global::settings.library.path.c_str(), &conn, db_flags, NULL);
+        int startup_result = sqlite3_open_v2(Global::asset_manager->getDataPath(Global::settings.library.path).string().c_str(), &conn, db_flags, NULL);
 
         if (startup_result != SQLITE_OK) {
             PLOGE << "Error on database startup: " << sqlite3_errmsg(conn);

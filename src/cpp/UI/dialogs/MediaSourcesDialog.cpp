@@ -3,6 +3,7 @@
 #include <plog/Log.h>
 #include <tinyfiledialogs.h>
 
+#include "assets/asset_globals.h"
 #include "MediaSourcesDialog.h"
 #include "media_source/source_globals.h"
 #include "ns_abbr/fs.h"
@@ -70,17 +71,21 @@ void MediaSourcesDialog::drawLocations() {
                 ImGui::EndCombo();
             }
 
-            if (ImGui::BeginCombo("Parser Script##selectable_file_parser:", it.second->get_parserScriptPath().c_str())) {
-                for (const fs::directory_entry& entry : fs::directory_iterator(Global::settings.scripts.movie_parsers_path)) {
-                    if (ImGui::Selectable(entry.path().string().c_str(), entry.path().string() == it.second->get_parserScriptPath())) {
+            if (ImGui::BeginCombo("Parser Script##selectable_file_parser:", fs::path(it.second->get_parserScriptPath()).filename().string().c_str())) {
+                for (const fs::directory_entry& entry : fs::directory_iterator(
+                        Global::asset_manager->getDataPath(Global::settings.scripts.movie_parsers_path)
+                    )) {
+                    if (ImGui::Selectable(entry.path().filename().string().c_str(), entry.path().string() == it.second->get_parserScriptPath())) {
                         it.second->set_parserScriptPath(entry.path().string());
                     }
                 }
                 ImGui::EndCombo();
             }
-            if (ImGui::BeginCombo("Scraper Script##selectable_file_scraper:", it.second->get_scraperScriptPath().c_str())) {
-                for (const fs::directory_entry& entry : fs::directory_iterator(Global::settings.scripts.movie_scrapers_path)) {
-                    if (ImGui::Selectable(entry.path().string().c_str(), entry.path().string() == it.second->get_scraperScriptPath())) {
+            if (ImGui::BeginCombo("Scraper Script##selectable_file_scraper:", fs::path(it.second->get_scraperScriptPath()).filename().string().c_str())) {
+                for (const fs::directory_entry& entry : fs::directory_iterator(
+                        Global::asset_manager->getDataPath(Global::settings.scripts.movie_scrapers_path)
+                    )) {
+                    if (ImGui::Selectable(entry.path().filename().string().c_str(), entry.path().string() == it.second->get_scraperScriptPath())) {
                         it.second->set_scraperScriptPath(entry.path().string());
                     }
                 }

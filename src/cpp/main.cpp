@@ -4,12 +4,10 @@
 
 #include "globals.h"
 #include "logging.h"
-#include "media_source/serialize.h"
 #include "ns_abbr/fs.h"
 #include "settings/root_settings.h"
 #include "ui/menubar/menubar.h"
 #include <plog/Log.h>
-
 
 #define SETTINGS_PATH "settings.json"
 #define MEDIA_SOURCES_PATH "media_sources.json"
@@ -20,8 +18,11 @@
 
 // Main code
 int main(int, char**) {
-    Settings::load_settings(&Global::settings, SETTINGS_PATH);
+    // Asset manager has the code for accessing the app's data folder:
+    Global::asset_manager = new Assets::AssetManager(); 
+    Settings::load_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
     Logging::setup_logs();
+
 
     // Loading Media Sources:
     Global::media_sources = new MediaSource::MediaSourceManager();
@@ -55,13 +56,11 @@ int main(int, char**) {
     SDL_GetRendererInfo(Global::renderer, &info);
     PLOGI.printf("Current SDL_Renderer: %s", info.name);
 
-    // Because asset_manager holds SDL2 textures, it need to be initialized after SDL2.
-    Global::asset_manager = new Assets::AssetManager(); 
-
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
+    io.IniFilename = Global::asset_manager->getDataPath("imgui.ini").string().c_str();
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
@@ -167,14 +166,17 @@ int main(int, char**) {
     ImGui::DestroyContext();
 
     // Because asset_manager holds SDL2 textures, it need to be cleaned up before we quit SDL2.
+    delete Global::library_db;
+    
+    Settings::save_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
+    Global::media_sources->saveSources(Global::asset_manager->getDataPath(MEDIA_SOURCES_PATH));
+    delete Global::media_sources;
+
     delete Global::asset_manager;
+
     SDL_DestroyRenderer(Global::renderer);
     SDL_DestroyWindow(Global::sdl2_window);
     SDL_Quit();
-
-    delete Global::library_db;
-    Settings::save_settings(&Global::settings, SETTINGS_PATH);
-    Global::media_sources->saveSources(MEDIA_SOURCES_PATH);
 
     return 0;
 }

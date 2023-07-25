@@ -16,8 +16,10 @@ namespace Assets {
         AssetManager();
         ~AssetManager();
 
-        fs::path getAssetRoot() { return fs::path(Global::settings.assets.root_path); }
-        // fs::path getMoviePosterRoot() { return getAssetRoot().append("movie_posters"); }
+        fs::path getUserHomeDirectory();
+        fs::path getDataDirectory();
+        fs::path getDataPath(std::string file_path);
+        fs::path getAssetRoot();
 
     private:
         void initDirectory(fs::path path);

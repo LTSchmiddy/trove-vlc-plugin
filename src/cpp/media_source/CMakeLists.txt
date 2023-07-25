@@ -4,8 +4,8 @@ add_sources_to_all_projects(
 
     "./MediaSourceManager.h"
     "./MediaSourceManager.cpp"
-    "./serialize.h"
-    "./serialize.cpp"
+    # "./serialize.h"
+    # "./serialize.cpp"
 )
 
 add_subdirectory("./source_types")

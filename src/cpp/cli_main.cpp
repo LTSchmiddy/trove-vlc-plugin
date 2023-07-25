@@ -6,7 +6,6 @@
 
 #include "globals.h"
 #include "logging.h"
-#include "media_source/serialize.h"
 #include "ns_abbr/fs.h"
 #include "ns_abbr/json.h"
 #include "settings/root_settings.h"
@@ -22,15 +21,16 @@
 
 // Main code
 int main(int argc, char** argv) {
-    Settings::load_settings(&Global::settings, SETTINGS_PATH);
+    Global::asset_manager = new Assets::AssetManager(); 
+    Settings::load_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
     // Logging::setup_logs();
 
     // Loading Media Sources:
     Global::media_sources = new MediaSource::MediaSourceManager();
-    Global::media_sources->loadSources(MEDIA_SOURCES_PATH);
+    Global::media_sources->loadSources(Global::asset_manager->getDataPath(MEDIA_SOURCES_PATH));
     // Loading Library Database:
     Global::library_db = new Library::Database();
-    Global::asset_manager = new Assets::AssetManager(); 
+
     
     // Load and parse args:
     try {
@@ -45,10 +45,11 @@ int main(int argc, char** argv) {
     }
 
     // Cleanup
-    delete Global::asset_manager;
     delete Global::library_db;
-    Settings::save_settings(&Global::settings, SETTINGS_PATH);
-    Global::media_sources->saveSources(MEDIA_SOURCES_PATH);
+    Settings::save_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
+    Global::media_sources->saveSources(Global::asset_manager->getDataPath(MEDIA_SOURCES_PATH));
+    delete Global::asset_manager;
+    delete Global::media_sources;
 
     return 0;
 }
