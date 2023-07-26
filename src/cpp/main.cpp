@@ -11,6 +11,7 @@
 
 #define SETTINGS_PATH "settings.json"
 #define MEDIA_SOURCES_PATH "media_sources.json"
+#define TARGET_FPS 60.0f
 
 #if !SDL_VERSION_ATLEAST(2, 0, 17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
@@ -100,8 +101,11 @@ int main(int argc, char** argv) {
     Global::main_window = new UI::MainWindow();
     Global::sub_window_handler = new UI::SubWindowHandler();
 
+    unsigned int target_frame_length_ms = (1.0f / (float)TARGET_FPS) * 1000;
+
     // Main loop:
     while (!Global::should_terminate) {
+        unsigned long frame_start_time = SDL_GetTicks64();
 
         Global::main_window->onBackground();
 
@@ -137,7 +141,7 @@ int main(int argc, char** argv) {
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
-        
+
 
         // Draw Application:
         UI::draw_menu_bar();
@@ -159,6 +163,15 @@ int main(int argc, char** argv) {
         // Run tasks intended for the end of the frame:
         Global::sub_window_handler->handleDeletion();
         Global::media_sources->runSourceUpdates();
+
+        // Process Frame Delay:
+        // We'll calculate how long the frame took to process, and delay for the remainder.
+        unsigned long frame_end_time = SDL_GetTicks64();
+        unsigned long frame_delta_time = frame_end_time - frame_start_time;
+
+        if (frame_delta_time < target_frame_length_ms) {
+            SDL_Delay(target_frame_length_ms - frame_delta_time);
+        }
     }
 
     // Cleanup
