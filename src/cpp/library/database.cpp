@@ -2,7 +2,7 @@
 
 #include <plog/Log.h>
 
-#include "database.h"
+#include "Database.h"
 #include "settings/settings_globals.h"
 #include "media_source/source_globals.h"
 #include "assets/asset_globals.h"

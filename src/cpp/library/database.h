@@ -27,7 +27,6 @@ namespace Library {
         json dumpToJson();
         void exportToJson(std::string out_path);
 
-
     private:
         sqlite3* conn;
     };
