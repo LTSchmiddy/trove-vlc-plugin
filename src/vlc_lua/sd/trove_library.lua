@@ -5,13 +5,13 @@ lazily_loaded = false
 -- Libraries:
 io = nil
 json = nil
-trove_settings = nil
+trove_utils = nil
 
 function lazy_load()
     if lazily_loaded then return nil end
     json = require("json")
     io = require("io")
-    trove_settings = require("trove_settings")
+    trove_utils = require("trove_utils")
     lazily_loaded = true
 end
 
@@ -31,7 +31,7 @@ end
 function main()
     lazy_load()
     -- Load the data from disk:
-    local f = io.popen(trove_dump_cmd())
+    local f = io.popen(trove_utils:get_library_command())
     if f == nil then 
         return 
     end
@@ -56,6 +56,3 @@ end
 
 -- Internal Functions:
 
-function trove_dump_cmd()
-    return "\"" .. trove_settings.trove_cli_location .. "\" -d"
-end

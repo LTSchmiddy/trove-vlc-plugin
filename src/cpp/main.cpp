@@ -17,7 +17,8 @@
 #endif
 
 // Main code
-int main(int, char**) {
+int main(int argc, char** argv) {
+    Global::app_path = std::filesystem::path(argv[0]);
     // Asset manager has the code for accessing the app's data folder:
     Global::asset_manager = new Assets::AssetManager(); 
     Settings::load_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
@@ -60,7 +61,8 @@ int main(int, char**) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    io.IniFilename = Global::asset_manager->getDataPath("imgui.ini").string().c_str();
+    std::string imgui_ini_path = Global::asset_manager->getDataPath("imgui.ini").string();
+    io.IniFilename = imgui_ini_path.c_str();
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls

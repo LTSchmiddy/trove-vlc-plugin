@@ -21,6 +21,8 @@
 
 // Main code
 int main(int argc, char** argv) {
+    Global::app_path = std::filesystem::path(argv[0]);
+
     Global::asset_manager = new Assets::AssetManager(); 
     Settings::load_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
     // Logging::setup_logs();
