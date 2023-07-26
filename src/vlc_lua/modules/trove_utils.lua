@@ -12,13 +12,13 @@ trove_utils = {
         return self:get_path_seperator() ~= "\\"
     end,
 
-    get_manager_path = function (self)
-        local retVal = trove_settings.trove_location .. self:get_path_seperator() .. "trove-manager"
-        if not self:is_unix() then
-            retVal = retVal .. ".exe"
-        end
-        return retVal
-    end,
+    -- get_manager_path = function (self)
+    --     local retVal = trove_settings.trove_location .. self:get_path_seperator() .. "trove-manager"
+    --     if not self:is_unix() then
+    --         retVal = retVal .. ".exe"
+    --     end
+    --     return retVal
+    -- end,
 
     get_cli_path = function (self)
         local retVal = trove_settings.trove_location .. self:get_path_seperator() .. "trove-cli"
@@ -29,8 +29,13 @@ trove_utils = {
     end,
 
     get_library_command = function (self)
-        return "\"" .. self:get_cli_path() .. "\" -d"
+        return "\"" .. self:get_cli_path() .. "\" -l"
+    end,
+
+    start_manager_command = function (self)
+        return "\"" .. self:get_cli_path() .. "\" -m"
     end
+
 
 
 }

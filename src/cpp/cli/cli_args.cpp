@@ -2,12 +2,13 @@
 #include <string>
 #include <exception>
 
+#include <process.hpp>
+
 #include "ns_abbr/json.h"
 #include "cli_args.h"
 #include "ns_abbr/json.h"
 #include "library/library_globals.h"
 #include "app_globals.h"
-#include "extern/subprocess.h"
 
 namespace CLI {
     // Configure args:
@@ -18,7 +19,7 @@ namespace CLI {
             ("h,help", "Print usage")
             ("l,get-library", "Dump the library database to stdout as Json data.")
             ("m,start-manager", "Start Trove Manager.");
-            
+
         return options;
     }
 
@@ -45,13 +46,7 @@ namespace CLI {
 #else
             std::string exec_path = Global::app_path.parent_path().append("trove-manager").string();
 #endif
-            const char *command_line[] = {exec_path.c_str(), NULL};
-
-            struct subprocess_s subprocess;
-            int result = subprocess_create(command_line, 0, &subprocess);
-            if (0 != result) {
-                throw std::exception(std::format("Unable to start process '{}'.", command_line[0]).c_str());
-            }
+            TinyProcessLib::Process manager_proc(exec_path);
         }
     }
 }

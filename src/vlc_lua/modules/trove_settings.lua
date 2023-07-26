@@ -3,7 +3,7 @@
 -- The main thing vlc needs to know is where trove is located.
 
 local trove_settings = {
-    trove_location = "..\\build\\x64-windows-Release\\bin"
+    trove_location = "..\\build\\x64-windows-Debug\\bin"
 }
 
 return trove_settings

@@ -28,12 +28,11 @@ end
 
 function trigger()
     -- this is where extension starts
-    -- for example activation of extension opens custom dialog box:
-    -- create_dialog()
-
 
     vlc.msg.dbg("Opening Trove Manager...")
-    os.execute(trove_utils:get_manager_path())
+    vlc.msg.dbg(trove_utils:start_manager_command())
+    -- os.execute(trove_utils:get_manager_path())
+    io.popen(trove_utils:start_manager_command())
 end
 
 function input_changed()

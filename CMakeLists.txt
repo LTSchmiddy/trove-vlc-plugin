@@ -4,10 +4,6 @@ project(trove VERSION 0.1.0)
 set(TARGET_NAME trove-manager)
 set(CLI_TARGET_NAME trove-cli)
 
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
-
 cmake_policy(SET CMP0076 NEW)
 set (CMAKE_CXX_STANDARD 20)
 
@@ -68,6 +64,10 @@ function(link_target VAR_TARGET_NAME)
     # Adding TinyFileDialogs:
     find_package(tinyfiledialogs CONFIG REQUIRED)
     target_link_libraries(${VAR_TARGET_NAME} PRIVATE tinyfiledialogs::tinyfiledialogs)
+
+    # # Adding Tiny Process Library
+    find_package(tiny-process-library CONFIG REQUIRED)
+    target_link_libraries(${VAR_TARGET_NAME} PRIVATE tiny-process-library::tiny-process-library)
 
     set_target_properties(${VAR_TARGET_NAME}
         PROPERTIES

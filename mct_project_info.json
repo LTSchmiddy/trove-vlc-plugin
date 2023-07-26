@@ -13,7 +13,7 @@
             "curl[ssl]",
             "curlpp",
             "tinyfiledialogs",
-            "bshoshany-thread-pool"
+            "tiny-process-library"
         ]
     },
     "required_user_toolchain_values": [],
