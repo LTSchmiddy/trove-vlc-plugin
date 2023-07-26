@@ -137,11 +137,12 @@ int main(int argc, char** argv) {
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
+        
 
         // Draw Application:
         UI::draw_menu_bar();
-        Global::sub_window_handler->handleDraw();
         Global::main_window->onDraw();
+        Global::sub_window_handler->handleDraw();
 
         // Rendering
         ImGui::Render();

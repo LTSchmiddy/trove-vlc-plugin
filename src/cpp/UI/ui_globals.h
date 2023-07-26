@@ -7,7 +7,7 @@
 
 #include "gfx_headers.h"
 #include "ui/base/fragment.h"
-#include "ui/main_window/main_window.h"
+#include "ui/main_window/MainWindow.h"
 #include "ui/SubWindowHandler.h"
 
 namespace Global {

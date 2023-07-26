@@ -1,4 +1,4 @@
-#include "main_window.h"
+#include "MainWindow.h"
 #include "globals.h"
 #include "ui/dialogs/MediaSourcesDialog.h"
 #include "library/library_globals.h"
@@ -20,9 +20,7 @@ namespace UI {
     }
 
     void MainWindow::onDraw() {
-
         int res_x, res_y;
-
         SDL_GetWindowSize(Global::sdl2_window, &res_x, &res_y);
 
         ImVec2 window_dimens(res_x - (margins.x*2), res_y - (margins.y*2));
