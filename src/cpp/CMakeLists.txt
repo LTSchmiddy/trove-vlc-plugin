@@ -20,7 +20,6 @@ target_sources(${CLI_TARGET_NAME}
 
 add_subdirectory("./assets")
 add_subdirectory("./cli")
-add_subdirectory("./extern")
 add_subdirectory("./library")
 add_subdirectory("./media_source")
 add_subdirectory("./ns_abbr")

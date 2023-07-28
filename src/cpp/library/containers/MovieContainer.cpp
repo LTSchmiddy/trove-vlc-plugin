@@ -1,4 +1,5 @@
 #include "MovieContainer.h"
+#include "assets/asset_globals.h"
 #include "library/library_globals.h"
 
 namespace Library::Containers {
@@ -10,6 +11,15 @@ namespace Library::Containers {
                 *p_found = found;
             }
         }
+    }
+
+    MovieContainer::MovieContainer(std::string p_source, std::string p_path, std::string p_title, std::string p_date, std::string p_desc, std::string p_poster_path) {
+        source = p_source;
+        path = p_path;
+        title = p_title;
+        date = p_date;
+        desc = p_desc;
+        poster_path = p_poster_path;
     }
     MovieContainer::~MovieContainer() {}
 
@@ -89,4 +99,10 @@ namespace Library::Containers {
             return retVal;
         }
     }
+
+#ifdef UI_BUILD
+    void MovieContainer::loadPosterImg() {
+        poster_img = Global::asset_manager->loadTexture(poster_path);
+    }
+#endif
 }

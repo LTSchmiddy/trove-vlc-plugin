@@ -3,6 +3,9 @@
 #include "SDL_Texture_wrapper.h"
 
 namespace Assets::AssetWrappers {
+    // SdlTextureWrapper::SdlTextureWrapper() {
+    //     _texture = NULL;
+    // }
 
     SdlTextureWrapper::SdlTextureWrapper(SDL_Texture* p_texture) {
         _texture = p_texture;

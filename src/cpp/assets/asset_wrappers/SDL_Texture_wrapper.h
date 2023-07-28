@@ -5,6 +5,7 @@
 namespace Assets::AssetWrappers {
     class SdlTextureWrapper {
     public:
+        // SdlTextureWrapper();
         SdlTextureWrapper(SDL_Texture* p_texture);
         ~SdlTextureWrapper();
         SDL_Texture* get();

@@ -6,4 +6,5 @@
 #include <imgui_impl_sdlrenderer2.h>
 
 #include <SDL.h>
+#include <SDL_image.h>
 

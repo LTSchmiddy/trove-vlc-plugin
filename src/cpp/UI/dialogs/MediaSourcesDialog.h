@@ -5,7 +5,7 @@
 #include "ui/base/fragment.h"
 #include "media_source/source_types/FileSource.h"
 
-namespace UI {
+namespace UI::Dialogs {
     const std::string contentTypeLabels[] = {"Movies", "TV Shows", "Other"};
 
     class MediaSourcesDialog : public Fragment {

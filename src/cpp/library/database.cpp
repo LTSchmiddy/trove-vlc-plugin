@@ -74,7 +74,7 @@ namespace Library {
         return stmt;
     }
 
-    int Database::simpleRunStatement(sqlite3_stmt* stmt) {
+    bool Database::simpleRunStatement(sqlite3_stmt* stmt) {
         int step_result = sqlite3_step(stmt);
         if (!(step_result == SQLITE_DONE || step_result == SQLITE_ROW)) {
             logSqlExecutionError(step_result, stmt);

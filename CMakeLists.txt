@@ -13,6 +13,7 @@ add_executable(${TARGET_NAME})
 add_executable(${CLI_TARGET_NAME})
 
 target_compile_definitions(${CLI_TARGET_NAME} PRIVATE CLI_BUILD=1)
+target_compile_definitions(${TARGET_NAME} PRIVATE UI_BUILD=1)
 
 
 function(link_target VAR_TARGET_NAME)

@@ -20,7 +20,7 @@ namespace Library {
 
         // Generate and run simple statements:
         sqlite3_stmt* simpleStatementFromString(std::string sql);
-        int simpleRunStatement(sqlite3_stmt* stmt);
+        bool simpleRunStatement(sqlite3_stmt* stmt);
         bool runSimpleSqlString(std::string sql);
         sqlite3_stmt* returnSimpleSqlString(std::string sql);
 

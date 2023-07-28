@@ -15,10 +15,9 @@ namespace UI {
 
     class Fragment {
     public:
+        virtual void onBackground();
         // Return false if the event should be consumed:
         virtual bool onEvent(SDL_Event* event);
-        
-        virtual void onBackground();
         virtual void onDraw();
         virtual bool shouldDestroy();
     };
@@ -33,8 +32,8 @@ namespace UI {
         FWindow(std::string p_id, std::shared_ptr<Fragment> p_content, bool p_start_open = true, ImGuiWindowFlags p_flags = 0);
         ~FWindow();
 
-        bool onEvent(SDL_Event* event) override;
         void onBackground() override;
+        bool onEvent(SDL_Event* event) override;
         void onDraw() override;
         bool shouldDestroy() override;
     };

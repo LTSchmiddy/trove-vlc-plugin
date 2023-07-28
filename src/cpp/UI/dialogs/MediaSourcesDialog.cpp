@@ -10,7 +10,7 @@
 #include "settings/settings_globals.h"
 #include "ui/ui_globals.h"
 
-namespace UI {
+namespace UI::Dialogs {
 
 void MediaSourcesDialog::onDraw() {
     drawMenuBar();

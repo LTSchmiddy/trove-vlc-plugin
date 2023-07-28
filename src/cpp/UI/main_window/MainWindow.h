@@ -4,8 +4,7 @@
 #include "gfx_headers.h"
 #include "ui/base/fragment.h"
 
-#include "scripting/script_types/MovieScraperScript.h"
-#include "scripting/script_types/MovieParserScript.h"
+#include "ui/views/MovieView.h"
 
 namespace UI
 {
@@ -23,17 +22,12 @@ namespace UI
         MainWindow();
         ~MainWindow();
 
+        void onBackground() override;
+        bool onEvent(SDL_Event* event) override;
         void onDraw() override;
     private:
-        fs::path script_dir;
-        Scripting::ScriptTypes::MovieScraperScript* scraper = NULL;
-        Scripting::ScriptTypes::MovieParserScript* parser = NULL;
+        Views::MovieView movie_view;
 
-        std::string basicSearchParam;
-        std::string scrapOutput;
-
-        void drawParserTestInterface();
-        void drawQueryInterface();
 
     };
 } // namespace UI
