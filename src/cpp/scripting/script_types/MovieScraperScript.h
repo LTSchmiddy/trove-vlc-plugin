@@ -10,8 +10,7 @@ namespace Scripting::ScriptTypes {
 
     class MovieScraperScript : public ScriptBase {
     public:
-        MovieScraperScript(fs::path script_path);
-        MovieScraperScript(std::string script_path);
+        using ScriptBase::ScriptBase;
 
         bool basicSearch(std::string query, std::string* out);
 

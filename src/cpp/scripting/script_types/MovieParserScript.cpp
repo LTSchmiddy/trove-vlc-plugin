@@ -7,14 +7,7 @@
 
 
 namespace Scripting::ScriptTypes {
-    // Public:
-    MovieParserScript::MovieParserScript(fs::path script_path) {
-        _isLoaded = initScript(script_path.string().c_str());
-    }
-    MovieParserScript::MovieParserScript(std::string script_path) {
-        _isLoaded = initScript(script_path.c_str());
-    }
-
+    
     std::string MovieParserScript::parsePath(std::string directory, std::string filename) {
         sol::protected_function_result result = parsePathFunc(directory, filename);
 

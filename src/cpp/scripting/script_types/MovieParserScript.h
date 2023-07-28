@@ -11,8 +11,7 @@ namespace Scripting::ScriptTypes {
 
     class MovieParserScript : public ScriptBase {
     public:
-        MovieParserScript(fs::path script_path);
-        MovieParserScript(std::string script_path);
+        using ScriptBase::ScriptBase;
 
         std::string parsePath(std::string directory, std::string filename);
 
