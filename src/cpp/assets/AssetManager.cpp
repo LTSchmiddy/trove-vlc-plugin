@@ -38,6 +38,7 @@ namespace Assets {
     }
 
     fs::path AssetManager::getDataDirectory() {
+        std::lock_guard lock(guard);
 #ifndef NDEBUG 
         return fs::current_path();
 #else
@@ -46,14 +47,17 @@ namespace Assets {
     }
 
     fs::path AssetManager::getDataPath(std::string file_path) {
+        std::lock_guard lock(guard);
         return getDataDirectory().append(file_path);
     }
 
     fs::path AssetManager::getAssetRoot() {
+        std::lock_guard lock(guard);
         return getDataPath(Global::settings.assets.root_path);
     }
 
     void AssetManager::initDirectory(fs::path path) {
+        std::lock_guard lock(guard);
         if (!fs::exists(path)) {
             PLOGI.printf("Directory '%s' does not exist. Creating...", path.string().c_str());
             if (!fs::create_directories(path)) {
@@ -64,6 +68,7 @@ namespace Assets {
 
 #ifdef UI_BUILD
     SDL_Texture* AssetManager::loadTextureUnmanaged(std::string path) {
+        std::lock_guard lock(guard);
         SDL_Texture* retVal = NULL;
         
         fs::path fs_path(path);
@@ -81,6 +86,7 @@ namespace Assets {
     }
 
     std::shared_ptr<AssetWrappers::SdlTextureWrapper> AssetManager::loadTexture(std::string path) {
+        std::lock_guard lock(guard);
         if (textures.contains(path)) {
             // Return previously loaded instance:
             PLOGV << std::format("Texture at path '{}' has been loaded {} times.", path, textures.at(path).use_count());
@@ -96,6 +102,7 @@ namespace Assets {
     }
 
     void AssetManager::cleanupUnusedTextures() {
+        std::lock_guard lock(guard);
         // ===== Textures =====
         // Find textures to remove:        
         std::list<std::string> textures_to_remove;

@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <mutex>
 
 #include "asset_wrappers/SDL_Texture_wrapper.h"
 #include "ns_abbr/fs.h"
@@ -30,11 +31,13 @@ namespace Assets {
 #endif
 
     private:
-        void initDirectory(fs::path path);
-        
 #ifdef UI_BUILD
         // Texture functions:
         std::map<std::string, std::shared_ptr<AssetWrappers::SdlTextureWrapper>> textures;
 #endif
+        std::recursive_mutex guard;
+
+        void initDirectory(fs::path path);
+
     };
 }
