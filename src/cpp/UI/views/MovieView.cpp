@@ -31,13 +31,32 @@ namespace UI::Views {
     }
 
     void MovieView::onDraw() {
+        ImGui::PushID("movie_view");
+        drawListLayout();
+        ImGui::PopID();
+    }
+    
+    void MovieView::drawListLayout() {
+        ImGui::PushID("#movie_list_layout");
         for (auto movie : movie_list) {
+            ImGui::PushID(std::format("source_{}_path_{}", movie.source, movie.path).c_str());
+            float frame_width = ImGui::GetWindowWidth();
+            ImGui::BeginChild("Frame##child_frame", {frame_width, entry_size});
             if (movie.poster_img == NULL) {
                 movie.loadPosterImg();
             }
 
-            ImGui::Text("%s", movie.title.c_str());
-            ImGui::Image(movie.poster_img->get(), {50.0f, 50.0f});
+            // Poster ratio = 2:3
+            ImGui::Image(movie.poster_img->get(), {(entry_size/3.0f)*2.0f, entry_size});
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            ImGui::TextWrapped("%s", movie.title.c_str());
+            ImGui::TextWrapped("%s", movie.desc.c_str());
+
+            ImGui::EndGroup();
+            ImGui::EndChild();
+            ImGui::PopID();
         }
+        ImGui::PopID();
     }
 }

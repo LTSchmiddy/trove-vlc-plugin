@@ -142,6 +142,9 @@ int main(int argc, char** argv) {
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
+        if (Global::draw_demo_window) {
+            ImGui::ShowDemoWindow(&Global::draw_demo_window);
+        }
 
         // Draw Application:
         UI::draw_menu_bar();

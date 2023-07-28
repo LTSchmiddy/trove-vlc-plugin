@@ -1,3 +1,5 @@
+#include <thread>
+
 #include "MovieContainer.h"
 #include "assets/asset_globals.h"
 #include "library/library_globals.h"

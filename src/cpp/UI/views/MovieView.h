@@ -15,6 +15,11 @@ namespace UI::Views {
         MovieView();
         ~MovieView();
 
+        enum class LAYOUT {
+            LIST = 0,
+            GRID = 1
+        } layout = LAYOUT::LIST;
+
         void reloadMovieList();
 
         void onBackground() override;
@@ -22,6 +27,9 @@ namespace UI::Views {
         void onDraw() override;
 
     private:
-        std::vector<Library::Containers::MovieContainer> movie_list;   
+        float entry_size = 300.0f;
+        std::vector<Library::Containers::MovieContainer> movie_list;
+        
+        void drawListLayout();
     };
 }
