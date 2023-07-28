@@ -13,7 +13,7 @@ namespace UI {
                     Dialogs::create_media_sources_dialog();
                 }
 
-                if (ImGui::MenuItem("Show Demo Window", NULL, &Global::draw_demo_window));
+                ImGui::MenuItem("Show Demo Window", NULL, &Global::draw_demo_window);
                 ImGui::EndMenu();
             }            
             ImGui::EndMainMenuBar();

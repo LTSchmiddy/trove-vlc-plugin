@@ -26,6 +26,8 @@ namespace Settings {
         struct ScriptsSettings {
             std::string movie_scrapers_path = "./movie_scrapers";
             std::string movie_parsers_path = "./movie_parsers";
+            std::string tv_scrapers_path = "./tv_scrapers";
+            std::string tv_parsers_path = "./tv_parsers";
         } scripts;
         struct LibrarySettings {
             std::string path = "./library.db";

@@ -71,25 +71,32 @@ void MediaSourcesDialog::drawLocations() {
                 ImGui::EndCombo();
             }
 
-            if (ImGui::BeginCombo("Parser Script##selectable_file_parser:", fs::path(it.second->get_parserScriptPath()).filename().string().c_str())) {
-                for (const fs::directory_entry& entry : fs::directory_iterator(
-                        Global::asset_manager->getDataPath(Global::settings.scripts.movie_parsers_path)
-                    )) {
-                    if (ImGui::Selectable(entry.path().filename().string().c_str(), entry.path().string() == it.second->get_parserScriptPath())) {
-                        it.second->set_parserScriptPath(entry.path().string());
+
+            // We don't need to show scrapers for OTHER videos:
+            if (it.second->get_contentType() != MediaSource::SourceType::CONTENT_TYPE::OTHER) {
+                std::string parser_path = it.second->get_contentType() == MediaSource::SourceType::CONTENT_TYPE::MOVIES ? Global::settings.scripts.movie_parsers_path : Global::settings.scripts.tv_parsers_path;
+                std::string scraper_path = it.second->get_contentType() == MediaSource::SourceType::CONTENT_TYPE::MOVIES ? Global::settings.scripts.movie_scrapers_path : Global::settings.scripts.tv_scrapers_path;
+
+                if (ImGui::BeginCombo("Parser Script##selectable_file_parser:", fs::path(it.second->get_parserScriptPath()).filename().string().c_str())) {
+                    for (const fs::directory_entry& entry : fs::directory_iterator(
+                            Global::asset_manager->getDataPath(parser_path)
+                        )) {
+                        if (ImGui::Selectable(entry.path().filename().string().c_str(), entry.path().string() == it.second->get_parserScriptPath())) {
+                            it.second->set_parserScriptPath(entry.path().string());
+                        }
                     }
+                    ImGui::EndCombo();
                 }
-                ImGui::EndCombo();
-            }
-            if (ImGui::BeginCombo("Scraper Script##selectable_file_scraper:", fs::path(it.second->get_scraperScriptPath()).filename().string().c_str())) {
-                for (const fs::directory_entry& entry : fs::directory_iterator(
-                        Global::asset_manager->getDataPath(Global::settings.scripts.movie_scrapers_path)
-                    )) {
-                    if (ImGui::Selectable(entry.path().filename().string().c_str(), entry.path().string() == it.second->get_scraperScriptPath())) {
-                        it.second->set_scraperScriptPath(entry.path().string());
+                if (ImGui::BeginCombo("Scraper Script##selectable_file_scraper:", fs::path(it.second->get_scraperScriptPath()).filename().string().c_str())) {
+                    for (const fs::directory_entry& entry : fs::directory_iterator(
+                            Global::asset_manager->getDataPath(scraper_path)
+                        )) {
+                        if (ImGui::Selectable(entry.path().filename().string().c_str(), entry.path().string() == it.second->get_scraperScriptPath())) {
+                            it.second->set_scraperScriptPath(entry.path().string());
+                        }
                     }
+                    ImGui::EndCombo();
                 }
-                ImGui::EndCombo();
             }
 
             // Now to draw the config options for the source type:

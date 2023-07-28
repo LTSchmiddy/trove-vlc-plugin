@@ -4,6 +4,10 @@ add_sources_to_all_projects(
     "./MovieParserScript.cpp"
     "./MovieScraperScript.h"
     "./MovieScraperScript.cpp"
+    "./TvShowParserScript.h"
+    "./TvShowParserScript.cpp"
+    "./TvShowScraperScript.h"
+    "./TvShowScraperScript.cpp"
     "./ScriptBase.h"
     "./ScriptBase.cpp"
 )

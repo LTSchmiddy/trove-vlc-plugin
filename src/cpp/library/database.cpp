@@ -47,6 +47,36 @@ namespace Library {
                            "poster_path VARCHAR,"
                            "PRIMARY KEY (source, path)"
                            ");");
+
+        runSimpleSqlString("DROP TABLE IF EXISTS tv_episode;");
+        runSimpleSqlString("CREATE TABLE tv_episode ("
+                           "source VARCHAR,"
+                           "path VARCHAR,"
+                           "title VARCHAR,"
+                           "show_title VARCHAR,"
+                           "season INTEGER,"
+                           "episode INTEGER,"
+                           "date INTEGER,"
+                           "desc VARCHAR,"
+                           "PRIMARY KEY (source, path)"
+                           ");");
+
+        runSimpleSqlString("DROP TABLE IF EXISTS tv_season;");
+        runSimpleSqlString("CREATE TABLE tv_season ("
+                           "show_title VARCHAR,"
+                           "season INTEGER,"
+                           "title VARCHAR,"
+                           "desc VARCHAR,"
+                           "PRIMARY KEY (show_title, season)"
+                           ");");
+
+        runSimpleSqlString("DROP TABLE IF EXISTS tv_show;");
+        runSimpleSqlString("CREATE TABLE tv_show ("
+                           "title VARCHAR,"
+                           "seasons INTEGER,"
+                           "desc VARCHAR,"
+                           "PRIMARY KEY (title)"
+                           ");");
     }
     // Error Logging:
     void Database::logSqlCompilationError(int prepare_result, std::string sql){
