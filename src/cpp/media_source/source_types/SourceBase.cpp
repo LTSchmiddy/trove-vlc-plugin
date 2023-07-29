@@ -5,7 +5,8 @@ namespace MediaSource::SourceType {
 
     std::string SourceBase::getType() { return "base"; }
     std::string SourceBase::getUriPrefix() { return ""; }
-    void SourceBase::scan(std::stop_token stoken, std::string name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) {}
+    void SourceBase::scanForMovies(std::stop_token stoken, std::string name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) {}
+    void SourceBase::scanForTvShows(std::stop_token stoken, std::string name, Scripting::ScriptTypes::TvShowParserScript* parser, Scripting::ScriptTypes::TvShowScraperScript* scraper) {}
     void SourceBase::loadTypeSettings(json& settings_json) {}
     void SourceBase::saveTypeSettings(json& settings_json) {}
 
@@ -32,11 +33,16 @@ namespace MediaSource::SourceType {
         scanThread = std::jthread([this, name](std::stop_token stoken){
             // Indicate the scan is running:
             this->_isScanRunning = true;
-            
-            // Load parser and scraper:
-            Scripting::ScriptTypes::MovieParserScript parser(_parserScriptPath);
-            Scripting::ScriptTypes::MovieScraperScript scraper(_scraperScriptPath);
-            this->scan(stoken, name, &parser, &scraper);
+            if (get_contentType() == CONTENT_TYPE::MOVIES) {
+                // Load parser and scraper:
+                Scripting::ScriptTypes::MovieParserScript parser(_parserScriptPath);
+                Scripting::ScriptTypes::MovieScraperScript scraper(_scraperScriptPath);
+                this->scanForMovies(stoken, name, &parser, &scraper);
+            } else if (get_contentType() == CONTENT_TYPE::TV_SHOWS) {
+                Scripting::ScriptTypes::TvShowParserScript parser(_parserScriptPath);
+                Scripting::ScriptTypes::TvShowScraperScript scraper(_scraperScriptPath);
+                this->scanForTvShows(stoken, name, &parser, &scraper);
+            }
 
             // Scan is over:
             this->_isScanRunning = false;

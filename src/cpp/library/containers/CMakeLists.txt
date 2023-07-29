@@ -8,4 +8,6 @@ add_sources_to_all_projects(
     "./TvSeasonContainer.cpp"
     "./TvShowContainer.h"
     "./TvShowContainer.cpp"
+    "./TvShowSearchTextContainer.h"
+    "./TvShowSearchTextContainer.cpp"
 )

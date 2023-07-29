@@ -36,7 +36,7 @@ function parse_path(dir, filename)
     elseif year_parse_method(filename, retVal) then
         -- cjson.encode(retVal)
     else
-        retVal["name"] = filename
+        log.info("Could not parse movie path for " .. dir .. "/" .. filename)
     end
     local s_retVal = cjson.encode(retVal)
     -- print(s_retVal)

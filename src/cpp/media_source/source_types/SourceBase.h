@@ -9,6 +9,8 @@
 #include "ns_abbr/json.h"
 #include "scripting/script_types/MovieParserScript.h"
 #include "scripting/script_types/MovieScraperScript.h"
+#include "scripting/script_types/TvShowParserScript.h"
+#include "scripting/script_types/TvShowScraperScript.h"
 
 #define SOURCE_GETTER_FUNC(VAR_TYPE, VAR_NAME) \
     inline VAR_TYPE get##VAR_NAME() { \
@@ -64,7 +66,8 @@ namespace MediaSource::SourceType {
         std::jthread scanThread;
         bool _isScanRunning = false;
 
-        virtual void scan(std::stop_token stoken, std::string name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper);
+        virtual void scanForMovies(std::stop_token stoken, std::string name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper);
+        virtual void scanForTvShows(std::stop_token stoken, std::string name, Scripting::ScriptTypes::TvShowParserScript* parser, Scripting::ScriptTypes::TvShowScraperScript* scraper);
         virtual void loadTypeSettings(json& settings_json);
         virtual void saveTypeSettings(json& settings_json);
     };

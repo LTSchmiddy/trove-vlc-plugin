@@ -7,6 +7,14 @@
 
 
 namespace Scripting::ScriptTypes {
+    MovieScraperScript::MovieScraperScript(fs::path script_path) {
+        _isLoaded = initScript(script_path.string().c_str());
+    }
+    MovieScraperScript::MovieScraperScript(std::string script_path) {
+        _isLoaded = initScript(script_path.c_str());
+    }
+
+    
     bool MovieScraperScript::basicSearch(std::string query, std::string* out) {
         sol::protected_function_result result = basicSearchFunc(query);
 

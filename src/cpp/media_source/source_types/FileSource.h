@@ -13,11 +13,13 @@ namespace MediaSource::SourceType {
         std::string getUriPrefix() override;
         void loadTypeSettings(json& settings_json) override;
         void saveTypeSettings(json& settings_json) override;
-        void scan(std::stop_token stoken, std::string name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) override;
-
+        void scanForMovies(std::stop_token stoken, std::string src_name, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper) override;
+        void scanForTvShows(std::stop_token stoken, std::string src_name, Scripting::ScriptTypes::TvShowParserScript* parser, Scripting::ScriptTypes::TvShowScraperScript* scraper) override;
         SOURCE_GETSET(std::string, _rootPath);
+    
     private:
         std::string _rootPath;
-        void scanDirectory(std::stop_token stoken, std::string name, fs::path dir, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper);
+        void scanDirectoryForMovies(std::stop_token stoken, std::string src_name, fs::path dir, Scripting::ScriptTypes::MovieParserScript* parser, Scripting::ScriptTypes::MovieScraperScript* scraper);
+        void scanDirectoryForTvShows(std::stop_token stoken, std::string src_name, fs::path dir, Scripting::ScriptTypes::TvShowParserScript* parser, Scripting::ScriptTypes::TvShowScraperScript* scraper);
     };
 }

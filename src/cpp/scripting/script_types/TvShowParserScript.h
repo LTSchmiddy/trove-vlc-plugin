@@ -11,7 +11,8 @@ namespace Scripting::ScriptTypes {
 
     class TvShowParserScript : public ScriptBase {
     public:
-        using ScriptBase::ScriptBase;
+        TvShowParserScript(fs::path script_path);
+        TvShowParserScript(std::string script_path);
 
         std::string parsePath(std::string directory, std::string filename);
 

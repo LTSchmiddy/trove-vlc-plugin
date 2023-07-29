@@ -37,15 +37,39 @@ namespace Library {
 
     void Database::resetDb() {
         PLOGD << "Resetting DB";
+        // Movie Stuff
         runSimpleSqlString("DROP TABLE IF EXISTS movie;");
         runSimpleSqlString("CREATE TABLE movie ("
                            "source VARCHAR,"
                            "path VARCHAR,"
                            "title VARCHAR,"
-                           "date INTEGER,"
+                           "date VARCHAR,"
                            "desc VARCHAR,"
                            "poster_path VARCHAR,"
                            "PRIMARY KEY (source, path)"
+                           ");");
+
+        // TV Stuff
+        runSimpleSqlString("DROP TABLE IF EXISTS tv_show;");
+        runSimpleSqlString("CREATE TABLE tv_show ("
+                           "title VARCHAR,"
+                           "date INTEGER,"
+                           "seasons INTEGER,"
+                           "desc VARCHAR,"
+                           "poster_path VARCHAR,"
+                           "PRIMARY KEY (title, date)"
+                           ");");
+
+        runSimpleSqlString("DROP TABLE IF EXISTS tv_season;");
+        runSimpleSqlString("CREATE TABLE tv_season ("
+                           "show_title VARCHAR,"
+                           "show_date VARCHAR,"
+                           "season INTEGER,"
+                           "title VARCHAR,"
+                           "desc VARCHAR,"
+                           "poster_path VARCHAR,"
+                           "PRIMARY KEY (show_title, show_date, season),"
+                           "FOREIGN KEY(show_title, show_date) REFERENCES tv_show(title, date)"
                            ");");
 
         runSimpleSqlString("DROP TABLE IF EXISTS tv_episode;");
@@ -54,29 +78,29 @@ namespace Library {
                            "path VARCHAR,"
                            "title VARCHAR,"
                            "show_title VARCHAR,"
+                           "show_date VARCHAR,"
                            "season INTEGER,"
                            "episode INTEGER,"
-                           "date INTEGER,"
+                           "air_date VARCHAR,"
                            "desc VARCHAR,"
-                           "PRIMARY KEY (source, path)"
+                           "poster_path VARCHAR,"
+                           "PRIMARY KEY (source, path),"
+                           "FOREIGN KEY(show_title, show_date) REFERENCES tv_show(title, date),"
+                           "FOREIGN KEY(show_title, show_date, season) REFERENCES tv_season(show_title, show_date, season)"
                            ");");
 
-        runSimpleSqlString("DROP TABLE IF EXISTS tv_season;");
-        runSimpleSqlString("CREATE TABLE tv_season ("
+        // We'll use this to prevent searching for a show using the same search term more than once,
+        // which could happen a lot if we're getting the search term from a folder name.
+        runSimpleSqlString("DROP TABLE IF EXISTS tv_show_search_text;");
+        runSimpleSqlString("CREATE TABLE tv_show_search_text ("
+                           "search_text VARCHAR,"
                            "show_title VARCHAR,"
-                           "season INTEGER,"
-                           "title VARCHAR,"
-                           "desc VARCHAR,"
-                           "PRIMARY KEY (show_title, season)"
+                           "show_date VARCHAR,"
+                           "PRIMARY KEY (search_text),"
+                           "FOREIGN KEY(show_title, show_date) REFERENCES tv_show(title, date),"
                            ");");
 
-        runSimpleSqlString("DROP TABLE IF EXISTS tv_show;");
-        runSimpleSqlString("CREATE TABLE tv_show ("
-                           "title VARCHAR,"
-                           "seasons INTEGER,"
-                           "desc VARCHAR,"
-                           "PRIMARY KEY (title)"
-                           ");");
+
     }
     // Error Logging:
     void Database::logSqlCompilationError(int prepare_result, std::string sql){

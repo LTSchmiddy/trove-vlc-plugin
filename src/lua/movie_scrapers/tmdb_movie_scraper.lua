@@ -8,7 +8,7 @@ TMDB_API_READ_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MmNiNDM5Zjk5NDc5MDYyMTRm
 TMBD_REQUEST_HEADER = {"Authorization: Bearer " .. TMDB_API_READ_TOKEN}
 
 -- return title, date, description
-function basic_search(query_json)
+function basic_episode_search(query_json)
     query_dict = cjson.decode(query_json)
 
     local search_result = web_requests.get_args(
