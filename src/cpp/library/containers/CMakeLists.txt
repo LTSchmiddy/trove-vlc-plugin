@@ -2,4 +2,10 @@ add_sources_to_all_projects(
     PUBLIC    
     "./MovieContainer.h"
     "./MovieContainer.cpp"
+    "./TvEpisodeContainer.h"
+    "./TvEpisodeContainer.cpp"
+    "./TvSeasonContainer.h"
+    "./TvSeasonContainer.cpp"
+    "./TvShowContainer.h"
+    "./TvShowContainer.cpp"
 )
