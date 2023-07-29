@@ -102,6 +102,10 @@ namespace Library::Containers {
             return retVal;
         }
     }
+    
+    TvShowContainer TvSeasonContainer::getTvShow(bool* p_found) {
+        return TvShowContainer(show_title, show_date, true, p_found);
+    }
 
 #ifdef UI_BUILD
     void TvSeasonContainer::loadPosterImg() {

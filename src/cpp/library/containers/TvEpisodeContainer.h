@@ -6,6 +6,9 @@
     #include "assets/asset_wrappers/SDL_Texture_wrapper.h"
 #endif
 
+#include "TvShowContainer.h"
+#include "TvSeasonContainer.h"
+
 namespace Library::Containers {
     class TvEpisodeContainer {
     public:
@@ -41,6 +44,12 @@ namespace Library::Containers {
         bool loadFromDb(std::string p_source, std::string p_path);
         bool existsInDb();
         bool writeToDb();
+
+        // Get referenced Tv Show:
+        TvShowContainer getTvShow(bool* p_found = NULL);
+
+        // Get referenced Tv Show:
+        TvSeasonContainer getTvSeason(bool* p_found = NULL);
 
 #ifdef UI_BUILD
         // Poster Stuff

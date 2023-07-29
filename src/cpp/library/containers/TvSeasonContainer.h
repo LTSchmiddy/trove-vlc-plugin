@@ -6,6 +6,8 @@
     #include "assets/asset_wrappers/SDL_Texture_wrapper.h"
 #endif
 
+#include "TvShowContainer.h"
+
 namespace Library::Containers {
     class TvSeasonContainer {
     public:
@@ -21,11 +23,14 @@ namespace Library::Containers {
         TvSeasonContainer(std::string p_show_title, std::string p_show_date, int p_season, bool auto_load = true, bool* found = NULL);
         TvSeasonContainer(std::string p_show_title, std::string p_show_date, int p_season, std::string p_title, std::string p_desc, std::string p_poster_path);
         ~TvSeasonContainer();
-
+        
         bool reloadFromDb();
         bool loadFromDb(std::string p_show_title, std::string p_show_date, int p_season);
         bool existsInDb();
         bool writeToDb();
+
+        // Get referenced Tv Show:
+        TvShowContainer getTvShow(bool* p_found = NULL);
 
 #ifdef UI_BUILD
         // Poster Stuff
