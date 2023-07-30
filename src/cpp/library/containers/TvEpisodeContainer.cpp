@@ -9,9 +9,12 @@ namespace Library::Containers {
     TvEpisodeContainer::TvEpisodeContainer(std::string p_source, std::string p_path, bool auto_load, bool* p_found) {
         if (auto_load){
             bool found = loadFromDb(p_source, p_path);
-            if (p_found == NULL) {
+            if (p_found != NULL) {
                 *p_found = found;
-            }
+            } 
+        } else {
+            source = p_source;
+            path = p_path;
         }
     }
 
@@ -30,8 +33,8 @@ namespace Library::Containers {
         path = p_path;
         title = p_title;
         show_title = p_show_title;
-        show_date = show_date;
-        p_season = season;
+        show_date = p_show_date;
+        season = p_season;
         episode = p_episode;
         air_date = p_air_date;
         desc = p_desc;
@@ -89,7 +92,7 @@ namespace Library::Containers {
     bool TvEpisodeContainer::writeToDb() {
         if (existsInDb()) {
             sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString(
-                "UPDATE movie SET title = ?, show_title = ?, show_date = ?, season = ?, episode = ?, air_date = ?, desc = ?, poster_path = ? WHERE source = ? AND path = ?;"
+                "UPDATE tv_episode SET title = ?, show_title = ?, show_date = ?, season = ?, episode = ?, air_date = ?, desc = ?, poster_path = ? WHERE source = ? AND path = ?;"
             );
             
             sqlite3_bind_text(stmt, 1, title.c_str(), title.length(), NULL);
@@ -109,7 +112,7 @@ namespace Library::Containers {
 
         } else {
             sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString(
-                "INSERT INTO movie (source, path, title, show_title, show_date, season, episode, air_date, desc, poster_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+                "INSERT INTO tv_episode (source, path, title, show_title, show_date, season, episode, air_date, desc, poster_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
             );
             sqlite3_bind_text(stmt, 1, source.c_str(), source.length(), NULL);
             sqlite3_bind_text(stmt, 2, path.c_str(), path.length(), NULL);

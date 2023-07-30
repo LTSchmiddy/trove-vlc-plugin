@@ -96,10 +96,10 @@ namespace Library {
                            "search_text VARCHAR,"
                            "show_title VARCHAR,"
                            "show_date VARCHAR,"
+                           "scraper_vars JSON,"
                            "PRIMARY KEY (search_text),"
-                           "FOREIGN KEY(show_title, show_date) REFERENCES tv_show(title, date),"
+                           "FOREIGN KEY(show_title, show_date) REFERENCES tv_show(title, date)"
                            ");");
-
 
     }
     // Error Logging:
@@ -189,6 +189,11 @@ namespace Library {
         }
 
         retVal["movies"] = movies_json;
+        // Load TV Shows:
+        json tv_shows = json::array();
+        
+
+
         return retVal;
     }
 

@@ -8,7 +8,7 @@ TMDB_API_READ_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MmNiNDM5Zjk5NDc5MDYyMTRm
 TMBD_REQUEST_HEADER = {"Authorization: Bearer " .. TMDB_API_READ_TOKEN}
 
 -- return title, date, description
-function basic_episode_search(query_json)
+function basic_search(query_json)
     query_dict = cjson.decode(query_json)
 
     local search_result = web_requests.get_args(
@@ -36,7 +36,7 @@ function basic_episode_search(query_json)
     local movie_info = cjson.decode(movie_info_json)
 
     local poster_save_path = config_access.get_asset_root() .. "/tmdb_movies_posters" .. movie_info.poster_path
-    log.debug(poster_save_path)
+    -- log.debug(poster_save_path)
     web_requests.download_file("https://image.tmdb.org/t/p/original" .. movie_info.poster_path, poster_save_path, TMBD_REQUEST_HEADER)
 
     return cjson.encode ({

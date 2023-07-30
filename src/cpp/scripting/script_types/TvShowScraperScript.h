@@ -13,8 +13,8 @@ namespace Scripting::ScriptTypes {
         TvShowScraperScript(fs::path script_path);
         TvShowScraperScript(std::string script_path);
 
-        bool basicEpisodeSearch(std::string query, std::string* out);
-        bool basicSeasonSearch(std::string query, std::string* out);
+        bool basicEpisodeSearch(std::string query, std::string scraper_vars, std::string* out);
+        bool basicSeasonSearch(std::string query, std::string scraper_vars, std::string* out);
         bool basicShowSearch(std::string query, std::string* out);
 
     protected:

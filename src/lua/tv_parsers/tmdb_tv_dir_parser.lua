@@ -15,6 +15,7 @@ function year_parse_method(str, retVal)
         local year_string = string.sub(y_match.index[1].str, 2, y_match.index[1].length - 1)
         retVal["show_year"] = year_string
         retVal["show_name"] = string_trim(y_match.prefix.str)
+        retVal["_tv_show_search_text"] = string_trim(y_match.prefix.str)
         return true
     else 
         return false
@@ -48,10 +49,32 @@ end
 -- Return search parameters based on filepath. Paremeters should be in json format.
 function parse_path(dir, filename)
     
+    local parse_info = {}
     local retVal = {}
-    
-    year_parse_method(dir, retVal)
-    get_season_episode(filename, retVal)
+    if year_parse_method(dir, parse_info) and get_season_episode(filename, parse_info) then
+
+        retVal = {
+            show = {
+                show_name = parse_info["show_name"],
+                show_year = parse_info["show_year"],
+                _tv_show_search_text = parse_info["show_name"]
+            },
+            season = {
+                show_name = parse_info["show_name"],
+                show_year = parse_info["show_year"],
+                season = parse_info["season"],
+                _tv_show_season_number = parse_info["season"]
+            },
+            episode = {
+                show_name = parse_info["show_name"],
+                show_year = parse_info["show_year"],
+                season = parse_info["season"],
+                episode = parse_info["episode"],
+            }
+        }
+    else 
+        retVal = {}
+    end
 
     local s_retVal = cjson.encode(retVal)
     -- print(s_retVal)

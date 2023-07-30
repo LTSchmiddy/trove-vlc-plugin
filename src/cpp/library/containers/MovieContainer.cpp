@@ -9,9 +9,12 @@ namespace Library::Containers {
     MovieContainer::MovieContainer(std::string p_source, std::string p_path, bool auto_load, bool* p_found) {
         if (auto_load){
             bool found = loadFromDb(p_source, p_path);
-            if (p_found == NULL) {
+            if (p_found != NULL) {
                 *p_found = found;
             }
+        } else {
+            source = p_source;
+            path = p_path;
         }
     }
 

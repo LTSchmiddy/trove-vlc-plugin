@@ -1,5 +1,21 @@
 {
-    "packages": {},
+    "packages": {
+        "main": [
+            "sdl2",
+            "sdl2-image[libjpeg-turbo]",
+            "imgui[sdl2-binding,sdl2-renderer-binding]",
+            "nlohmann-json",
+            "sqlite3[tool,zlib,math,json1]",
+            "lua[cpp,tools]",
+            "sol2",
+            "cxxopts",
+            "plog",
+            "curl[ssl]",
+            "curlpp",
+            "tinyfiledialogs",
+            "tiny-process-library"
+        ]
+    },
     "required_user_toolchain_values": [],
     "shared_toolchain_files": []
 }

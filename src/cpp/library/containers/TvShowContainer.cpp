@@ -1,5 +1,7 @@
 #include <thread>
 
+#include <plog/Log.h>
+
 #include "TvShowContainer.h"
 #include "assets/asset_globals.h"
 #include "library/library_globals.h"
@@ -9,9 +11,13 @@ namespace Library::Containers {
     TvShowContainer::TvShowContainer(std::string p_title, std::string p_date, bool auto_load, bool* p_found) {
         if (auto_load){
             bool found = loadFromDb(p_title, p_date);
-            if (p_found == NULL) {
+            if (p_found != NULL) {
                 *p_found = found;
             }
+        }
+        else {
+            title = p_title;
+            date = p_date;
         }
     }
 
@@ -34,9 +40,9 @@ namespace Library::Containers {
         while (sqlite3_step(stmt) == SQLITE_ROW) {
             bool found = true;
 
-            seasons = sqlite3_column_int(stmt, 1);
-            desc = (char*)sqlite3_column_text(stmt, 2);
-            poster_path = (char*)sqlite3_column_text(stmt, 3);
+            seasons = sqlite3_column_int(stmt, 0);
+            desc = (char*)sqlite3_column_text(stmt, 1);
+            poster_path = (char*)sqlite3_column_text(stmt, 2);
         }
 
         sqlite3_finalize(stmt);
@@ -83,7 +89,7 @@ namespace Library::Containers {
 
         } else {
             sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString(
-                "INSERT INTO movie (title, date, seasons, desc, poster_path) VALUES (?, ?, ?, ?, ?);"
+                "INSERT INTO tv_show (title, date, seasons, desc, poster_path) VALUES (?, ?, ?, ?, ?);"
             );
             sqlite3_bind_text(stmt, 1, title.c_str(), title.length(), NULL);
             sqlite3_bind_text(stmt, 2, date.c_str(), date.length(), NULL);

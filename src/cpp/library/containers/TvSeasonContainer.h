@@ -14,7 +14,7 @@ namespace Library::Containers {
         // DB values:
         std::string show_title;
         std::string show_date;
-        int season;
+        int season = 0;
         std::string title;
         std::string desc;
         std::string poster_path;

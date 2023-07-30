@@ -10,8 +10,8 @@ namespace Scripting::ScriptTypes {
         _isLoaded = initScript(script_path.c_str());
     }
 
-    bool TvShowScraperScript::basicEpisodeSearch(std::string query, std::string* out) {
-        sol::protected_function_result result = basicEpisodeSearchFunc(query);
+    bool TvShowScraperScript::basicEpisodeSearch(std::string query, std::string scraper_vars, std::string* out) {
+        sol::protected_function_result result = basicEpisodeSearchFunc(query, scraper_vars);
 
         if (!result.valid()) {
 
@@ -25,8 +25,8 @@ namespace Scripting::ScriptTypes {
         return true;
     }
 
-    bool TvShowScraperScript::basicSeasonSearch(std::string query, std::string* out) {
-        sol::protected_function_result result = basicSeasonSearchFunc(query);
+    bool TvShowScraperScript::basicSeasonSearch(std::string query, std::string scraper_vars, std::string* out) {
+        sol::protected_function_result result = basicSeasonSearchFunc(query, scraper_vars);
 
         if (!result.valid()) {
 

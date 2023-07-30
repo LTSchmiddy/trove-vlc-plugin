@@ -18,8 +18,8 @@ namespace Library::Containers {
         std::string title;
         std::string show_title;
         std::string show_date;
-        int season;
-        int episode;
+        int season = 0;
+        int episode = 0;
         std::string air_date;
         std::string desc;
         std::string poster_path;

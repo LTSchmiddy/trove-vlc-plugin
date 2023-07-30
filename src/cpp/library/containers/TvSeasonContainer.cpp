@@ -9,9 +9,13 @@ namespace Library::Containers {
     TvSeasonContainer::TvSeasonContainer(std::string p_title, std::string p_date, int p_season, bool auto_load, bool* p_found) {
         if (auto_load){
             bool found = loadFromDb(p_title, p_date, p_season);
-            if (p_found == NULL) {
+            if (p_found != NULL) {
                 *p_found = found;
             }
+        } else {
+            show_title = p_title;
+            show_date = p_date;
+            season = p_season;
         }
     }
 
@@ -54,7 +58,7 @@ namespace Library::Containers {
     }
 
     bool TvSeasonContainer::existsInDb() {
-        sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString("SELECT COUNT(*) FROM tv_season WHERE title = ? AND date = ? AND season = ?");
+        sqlite3_stmt* stmt = Global::library_db->simpleStatementFromString("SELECT COUNT(*) FROM tv_season WHERE show_title = ? AND show_date = ? AND season = ?");
         sqlite3_bind_text(stmt, 1, show_title.c_str(), show_title.length(), NULL);
         sqlite3_bind_text(stmt, 2, show_date.c_str(), show_date.length(), NULL);
         sqlite3_bind_int(stmt, 3, season);

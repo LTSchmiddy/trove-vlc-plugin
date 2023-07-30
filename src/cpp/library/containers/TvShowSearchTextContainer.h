@@ -16,10 +16,11 @@ namespace Library::Containers {
         std::string search_text;
         std::string show_title;
         std::string show_date;
+        std::string scraper_vars;
         
         TvShowSearchTextContainer();
-        TvShowSearchTextContainer(std::string p_search_text, int p_season, bool auto_load = true, bool* found = NULL);
-        TvShowSearchTextContainer(std::string p_search_text, std::string p_show_title, std::string p_show_date);
+        TvShowSearchTextContainer(std::string p_search_text, bool auto_load = true, bool* found = NULL);
+        TvShowSearchTextContainer(std::string p_search_text, std::string p_show_title, std::string p_show_date, std::string p_scraper_info);
         ~TvShowSearchTextContainer();
         
         bool reloadFromDb();
@@ -29,13 +30,6 @@ namespace Library::Containers {
 
         // Get referenced Tv Show:
         TvShowContainer getTvShow(bool* p_found = NULL);
-
-#ifdef UI_BUILD
-        // Poster Stuff
-        std::shared_ptr<Assets::AssetWrappers::SdlTextureWrapper> poster_img = NULL;
-
-        void loadPosterImg();
-#endif
 
     };
 }
