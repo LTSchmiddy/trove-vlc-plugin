@@ -105,9 +105,9 @@ namespace Library::Containers {
         }
     }
 
-#ifdef UI_BUILD
+
     void MovieContainer::loadPosterImg() {
         poster_img = Global::asset_manager->loadTexture(poster_path);
     }
-#endif
+
 }

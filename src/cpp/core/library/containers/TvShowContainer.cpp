@@ -103,9 +103,8 @@ namespace Library::Containers {
         }
     }
 
-#ifdef UI_BUILD
     void TvShowContainer::loadPosterImg() {
         poster_img = Global::asset_manager->loadTexture(poster_path);
     }
-#endif
+
 }

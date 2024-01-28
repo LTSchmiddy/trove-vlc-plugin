@@ -2,9 +2,9 @@
 
 #include <string>
 #include <memory>
-#ifdef UI_BUILD
-    #include "core/assets/asset_wrappers/SDL_Texture_wrapper.h"
-#endif
+
+#include "core/assets/asset_wrappers/SDL_Texture_wrapper.h"
+
 
 #include "TvShowContainer.h"
 

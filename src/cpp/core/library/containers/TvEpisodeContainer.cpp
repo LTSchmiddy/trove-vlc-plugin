@@ -139,9 +139,9 @@ namespace Library::Containers {
         return TvSeasonContainer(show_title, show_date, season, true, p_found);
     }
 
-#ifdef UI_BUILD
+
     void TvEpisodeContainer::loadPosterImg() {
         poster_img = Global::asset_manager->loadTexture(poster_path);
     }
-#endif
+
 }
