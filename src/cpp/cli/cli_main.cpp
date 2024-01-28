@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 
     Global::asset_manager = new Assets::AssetManager(); 
     Settings::load_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
-    Logging::setup_logs();
+    Logging::setup_cli_logs();
 
     // Loading Media Sources:
     Global::media_sources = new MediaSource::MediaSourceManager();

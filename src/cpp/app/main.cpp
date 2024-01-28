@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     // Asset manager has the code for accessing the app's data folder:
     Global::asset_manager = new Assets::AssetManager(); 
     Settings::load_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
-    Logging::setup_logs();
+    Logging::setup_app_logs();
 
 
     // Loading Media Sources:
@@ -55,6 +55,8 @@ int main(int argc, char** argv) {
         PLOGE.printf("Error creating SDL_Renderer!");
         return 0;
     }
+
+    Global::asset_manager->setTextureRenderer(Global::renderer);
 
     SDL_RendererInfo info;
     SDL_GetRendererInfo(Global::renderer, &info);

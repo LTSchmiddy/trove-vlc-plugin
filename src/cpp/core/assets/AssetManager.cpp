@@ -5,9 +5,7 @@
 
 #include "AssetManager.h"
 
-#ifdef UI_BUILD
-    #include "app/ui/ui_globals.h"
-#endif
+
 
 #define TROVE_DIR_NAME ".trove"
 
@@ -66,16 +64,27 @@ namespace Assets {
         }
     }
 
-#ifdef UI_BUILD
+    SDL_Renderer* AssetManager::getTextureRenderer() {
+        return tex_renderer;
+    }
+
+    void AssetManager::setTextureRenderer(SDL_Renderer* p_tex_renderer) {
+        tex_renderer = p_tex_renderer;
+    }
+
     SDL_Texture* AssetManager::loadTextureUnmanaged(std::string path) {
+        if (tex_renderer == NULL) {
+            PLOGE << "No Texture Renderer has been assigned to the asset manager!";
+        }
+
         std::lock_guard lock(guard);
         SDL_Texture* retVal = NULL;
         
         fs::path fs_path(path);
         if (fs_path.is_absolute()) {
-            retVal = IMG_LoadTexture(Global::renderer, path.c_str());
+            retVal = IMG_LoadTexture(tex_renderer, path.c_str());
         } else {
-            retVal = IMG_LoadTexture(Global::renderer, getDataPath(path).string().c_str());
+            retVal = IMG_LoadTexture(tex_renderer, getDataPath(path).string().c_str());
         }
 
         if (retVal == NULL){
@@ -121,6 +130,6 @@ namespace Assets {
             textures.erase(path);
         }
     }
-#endif
+
 
 }
