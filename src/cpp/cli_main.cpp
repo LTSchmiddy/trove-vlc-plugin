@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 
     Global::asset_manager = new Assets::AssetManager(); 
     Settings::load_settings(&Global::settings, Global::asset_manager->getDataPath(SETTINGS_PATH));
-    // Logging::setup_logs();
+    Logging::setup_logs();
 
     // Loading Media Sources:
     Global::media_sources = new MediaSource::MediaSourceManager();
@@ -35,16 +35,16 @@ int main(int argc, char** argv) {
 
     
     // Load and parse args:
-    try {
+    // try {
         cxxopts::Options options = CLI::get_args_config();
         cxxopts::ParseResult results = options.parse(argc, argv);
 
         CLI::process_args(options, results);
 
     // Error handling:
-    } catch (std::exception& e) {
-        std::cerr << "ERROR: " << e.what();
-    }
+    // } catch (std::exception& e) {
+    //     std::cerr << "ERROR: " << e.what();
+    // }
 
     // Cleanup
     delete Global::library_db;

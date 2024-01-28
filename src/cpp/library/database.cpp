@@ -1,4 +1,5 @@
 #include <fstream>
+#include <format>
 
 #include <plog/Log.h>
 
@@ -170,7 +171,7 @@ namespace Library {
         json retVal;
 
         // Load movies:
-        json movies_json = json::array();
+        json movies = json::array();
         sqlite3_stmt* movie_stmt = simpleStatementFromString("SELECT source, path, title, date, desc, poster_path FROM movie ORDER BY title;");
         while (sqlite3_step(movie_stmt) == SQLITE_ROW) {
             json movie_entry;
@@ -184,90 +185,110 @@ namespace Library {
             movie_entry["date"] = (char*)sqlite3_column_text(movie_stmt, 3);
             movie_entry["desc"] = (char*)sqlite3_column_text(movie_stmt, 4);
             movie_entry["poster_path"] = fs::absolute((char*)sqlite3_column_text(movie_stmt, 5));
-            movies_json.push_back(movie_entry);
+            movies.push_back(movie_entry);
         }
         sqlite3_finalize(movie_stmt);
-        retVal["movies"] = movies_json;
+        retVal["movies"] = movies;
+
+
+        json tv_shows = json::array();
+        
+        json current_season;
+        json current_season_episodes = json::array();
+        json current_show;
+        json current_show_seasons = json::array();
+
+        std::string old_show_key = "";
+        std::string old_season_key = "";
 
         // Load TV Shows:
-        json tv_shows_json = json::array();
-        sqlite3_stmt* tv_show_stmt = simpleStatementFromString("SELECT title, date, poster_path FROM tv_show ORDER BY title;");
-        while (sqlite3_step(tv_show_stmt) == SQLITE_ROW) {
-            json tv_show_entry;
+        // We're gonna do this in one big query:
+        sqlite3_stmt* tv_episode_stmt = simpleStatementFromString(
+            "SELECT tv_episode.source, tv_episode.path, tv_episode.title, tv_episode.show_title, tv_episode.show_date, "
+                "tv_episode.season, tv_episode.episode, tv_episode.air_date, tv_episode.desc, tv_episode.poster_path, "
+                "tv_season.title, tv_season.poster_path, "
+                "tv_show.poster_path "
+            "FROM tv_episode "
+            "INNER JOIN tv_season ON tv_season.show_title = tv_episode.show_title AND tv_season.show_date = tv_episode.show_date AND "
+                "tv_season.season = tv_episode.season "
+            "INNER JOIN tv_show ON tv_episode.show_title = tv_show.title AND tv_episode.show_date = tv_show.date "
+            "ORDER BY tv_episode.show_title, tv_episode.season, tv_episode.episode;"
+        );
 
-            std::string show_title = (char*)sqlite3_column_text(tv_show_stmt, 0);
-            std::string show_date = (char*)sqlite3_column_text(tv_show_stmt, 1);
-            std::string show_poster_path = (char*)sqlite3_column_text(tv_show_stmt, 2);
-            
-            tv_show_entry["title"] = show_title;
-            tv_show_entry["poster_path"] = show_poster_path;
+        int current_step = sqlite3_step(tv_episode_stmt);
+        while (current_step == SQLITE_ROW) {
+            std::string show_title = (char*)sqlite3_column_text(tv_episode_stmt, 3);
+            std::string show_date = (char*)sqlite3_column_text(tv_episode_stmt, 4);
+            int season = sqlite3_column_int(tv_episode_stmt, 5);
 
-            // Load Seasons:
-            sqlite3_stmt* tv_season_stmt = simpleStatementFromString(
-                "SELECT show_title, show_date, season, title, poster_path FROM tv_season "
-                "WHERE show_title = ?, show_date = ? ORDER BY season;"
-            );
-            sqlite3_bind_text(tv_season_stmt, 1, show_title.c_str(), show_title.length(), NULL);
-            sqlite3_bind_text(tv_season_stmt, 2, show_date.c_str(), show_date.length(), NULL);
+            std::string season_key = std::format("show_{}_date_{}_season_{}", show_title, show_date, season);
+            if (season_key != old_season_key) {
+                // We're moving on to a new season. Let's add move on to the next one:
+                if (old_season_key != "") {
+                    // Skip this part if we're here in the loop's first iteration:
+                    current_season["episodes"] = current_season_episodes;
+                    current_show_seasons.push_back(current_season);
 
-            json tv_seasons_json = json::array();
-            int current_step = sqlite3_step(tv_season_stmt);
-            while (current_step == SQLITE_ROW) {
-                json tv_season_entry;
-
-                int season_number = sqlite3_column_int(tv_season_stmt, 2);
-                std::string season_title = (char*)sqlite3_column_text(tv_season_stmt, 3);
-                std::string season_poster_path = (char*)sqlite3_column_text(tv_season_stmt, 4);
-
-                tv_season_entry["season_number"] = season_number;
-                tv_season_entry["season_title"] = season_title;
-                tv_season_entry["season_poster_path"] = season_poster_path;
-
-                // Load Episodes:
-                sqlite3_stmt* tv_episode_stmt = simpleStatementFromString(
-                    "SELECT source, path, title, show_title, show_date, season, episode, air_date, desc, poster_path FROM tv_episode "
-                    "WHERE show_title = ?, show_date = ?, season = ? ORDER BY episode;"
-                );            
-                sqlite3_bind_text(tv_episode_stmt, 1, show_title.c_str(), show_title.length(), NULL);
-                sqlite3_bind_text(tv_episode_stmt, 2, show_date.c_str(), show_date.length(), NULL);
-                sqlite3_bind_int(tv_episode_stmt, 3, season_number);
-
-                json tv_episodes_json = json::array();
-                while (sqlite3_step(tv_episode_stmt) == SQLITE_ROW) {
-                    json tv_episode_entry;
-
-                    // Constructing location:
-                    std::string source_name = (char*)sqlite3_column_text(tv_episode_stmt,0);
-                    std::string path = (char*)sqlite3_column_text(tv_episode_stmt, 1);
-                    auto source = Global::media_sources->getSourceMap()->at(source_name);
-                    tv_episode_entry["location"] = source->getUriPrefix() + "/" + path;
-
-                    tv_episode_entry["title"] = (char*)sqlite3_column_text(tv_episode_stmt, 2);
-                    tv_episode_entry["show_title"] = (char*)sqlite3_column_text(tv_episode_stmt, 3);
-                    tv_episode_entry["show_date"] = (char*)sqlite3_column_text(tv_episode_stmt, 4);
-                    tv_episode_entry["season"] = sqlite3_column_int(tv_episode_stmt, 5);
-                    tv_episode_entry["episode"] = sqlite3_column_int(tv_episode_stmt, 6);
-                    tv_episode_entry["air_date"] = (char*)sqlite3_column_text(tv_episode_stmt, 7);
-                    tv_episode_entry["desc"] = (char*)sqlite3_column_text(tv_episode_stmt, 8);
-                    tv_episode_entry["poster_path"] = (char*)sqlite3_column_text(tv_episode_stmt, 9);
-
-                    tv_episodes_json.push_back(tv_episode_entry);
+                    current_season = json();
+                    current_season_episodes = json::array();
                 }
-                sqlite3_finalize(tv_episode_stmt);
 
-                tv_season_entry["episodes"] = tv_episodes_json;
-                tv_seasons_json.push_back(tv_season_entry);
+                current_season["title"] = (char*)sqlite3_column_text(tv_episode_stmt, 10);
+                current_season["poster_path"] = (char*)sqlite3_column_text(tv_episode_stmt, 11);
 
-                current_step = sqlite3_step(tv_season_stmt);
+                old_season_key = season_key;
             }
-            sqlite3_finalize(tv_season_stmt);
-            // Seasons Loaded.
-            tv_show_entry["seasons"] = tv_seasons_json;
-            tv_shows_json.push_back(tv_show_entry);
+
+            std::string show_key = std::format("show_{}_date_{}", show_title, show_date);
+            if (show_key != old_show_key) {
+                // We're moving on to a new season. Let's add move on to the next one:
+                if (old_show_key != "") {
+                    // Skip this part if we're here in the loop's first iteration:
+                    current_show["seasons"] = current_show_seasons;
+                    tv_shows.push_back(current_show);
+
+                    current_show = json();
+                    current_show_seasons = json::array();
+                }
+
+                current_show["title"] = show_title;
+                current_show["poster_path"] = (char*)sqlite3_column_text(tv_episode_stmt, 12);
+
+                old_show_key = show_key;
+            }
+            
+            // New Episode:
+            json tv_episode_entry;
+            // Constructing location:
+            std::string source_name = (char*)sqlite3_column_text(tv_episode_stmt,0);
+            std::string path = (char*)sqlite3_column_text(tv_episode_stmt, 1);
+            auto source = Global::media_sources->getSourceMap()->at(source_name);
+            tv_episode_entry["location"] = source->getUriPrefix() + "/" + path;
+
+            tv_episode_entry["title"] = (char*)sqlite3_column_text(tv_episode_stmt, 2);
+            tv_episode_entry["show_title"] = show_title;
+            tv_episode_entry["show_date"] = show_date;
+            tv_episode_entry["season"] = season;
+            tv_episode_entry["episode"] = sqlite3_column_int(tv_episode_stmt, 6);
+            tv_episode_entry["air_date"] = (char*)sqlite3_column_text(tv_episode_stmt, 7);
+            tv_episode_entry["desc"] = (char*)sqlite3_column_text(tv_episode_stmt, 8);
+            tv_episode_entry["poster_path"] = (char*)sqlite3_column_text(tv_episode_stmt, 9);
+
+            current_season_episodes.push_back(tv_episode_entry);
+
+            current_step = sqlite3_step(tv_episode_stmt);
         }
-        sqlite3_finalize(tv_show_stmt);
+
+        // Add anything still in the buffers.
+        current_season["episodes"] = current_season_episodes;
+        current_show_seasons.push_back(current_season);
+        current_show["seasons"] = current_show_seasons;
+        tv_shows.push_back(current_show);
+
+        sqlite3_finalize(tv_episode_stmt);
+        retVal["tv_shows"] = tv_shows;
         // Shows Loaded.
-        retVal["tv_shows"] = tv_shows_json;
+
         return retVal;
     }
 

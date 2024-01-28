@@ -41,15 +41,38 @@ function main()
     library = json.decode(json_str)
 
     -- Process Movies:
-    local movie_node = vlc.sd.add_node({title="Movies"})
+    local movies_node = vlc.sd.add_node({title="Movies"})
     for index, movie in ipairs(library.movies) do
         -- local loc = vlc.strings.encode_uri_component(movie.location)
         local loc = vlc.strings.decode_uri(movie.location)
-        vlc.msg.dbg(loc)
-        movie_node:add_subitem({title = movie.title, description = movie.desc, date=movie.date, path=loc, arturl=vlc.strings.make_uri(movie.poster_path)})
+        movies_node:add_subitem({title = movie.title, description = movie.desc, date=movie.date, path=loc, arturl=vlc.strings.make_uri(movie.poster_path)})
     end
 
-    local show_node = vlc.sd.add_node({title="TV Shows"})
+    -- Process TV Shows:
+    local tv_shows_node = vlc.sd.add_node({title="TV Shows"})
+    for show_index, show in ipairs(library.tv_shows) do
+        local show_node = tv_shows_node:add_subnode({title = show.title, arturl=vlc.strings.make_uri(show.poster_path)})
+        
+        -- Process Seasons:
+        for season_index, season in ipairs(show.seasons) do 
+            local season_node = show_node:add_subnode({title = season.title, arturl=vlc.strings.make_uri(season.poster_path)})
+            
+            -- Process Episodes:
+            for episode_index, episode in ipairs(season.episodes) do 
+                local loc = vlc.strings.decode_uri(episode.location)
+                season_node:add_subitem({
+                    title = episode.title,
+                    description = episode.desc,
+                    date=episode.air_date,
+                    path=loc,
+                    showname=show.title,
+                    season=episode.season,
+                    episode=episode.episode,
+                    arturl=vlc.strings.make_uri(episode.poster_path)
+                })
+            end
+        end
+    end
 
     -- Do stuff here
 end

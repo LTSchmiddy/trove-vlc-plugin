@@ -36,7 +36,7 @@ namespace CLI {
 
         if (results.count("get-library")) {
             json db_json = Global::library_db->dumpToJson();
-            std::cout << db_json.dump(4);
+            std::cout << db_json.dump(4, ' ', false, json::error_handler_t::replace);
             return;
         }
 
