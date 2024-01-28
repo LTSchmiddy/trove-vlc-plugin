@@ -4,11 +4,11 @@
 
 #include <process.hpp>
 
-#include "ns_abbr/json.h"
+#include "core/ns_abbr/json.h"
 #include "cli_args.h"
-#include "ns_abbr/json.h"
-#include "library/library_globals.h"
-#include "app_globals.h"
+#include "core/ns_abbr/json.h"
+#include "core/library/library_globals.h"
+#include "core/globals.h"
 
 namespace CLI {
     // Configure args:
