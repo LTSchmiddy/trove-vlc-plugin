@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "app/app_globals.h"
 #include "core/globals.h"
 #include "app/ui/dialogs/MediaSourcesDialog.h"
 #include "core/library/library_globals.h"
