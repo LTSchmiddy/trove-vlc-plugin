@@ -5,7 +5,7 @@
             "sdl2-image[libjpeg-turbo]",
             "imgui[sdl2-binding,sdl2-renderer-binding]",
             "nlohmann-json",
-            "sqlite3[tool,zlib,math,json1]",
+            "sqlite3[tool,zlib,math,json1,fts5,dbstat,limit,session]",
             "lua[cpp,tools]",
             "sol2",
             "cxxopts",
