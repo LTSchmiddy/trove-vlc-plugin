@@ -1,5 +1,9 @@
 target_sources(${TARGET_NAME}
     PUBLIC
+    "./DatabaseView.h"
+    "./DatabaseView.cpp"
+    "./LoggerView.h"
+    "./LoggerView.cpp"
     "./MovieView.h"
     "./MovieView.cpp"
 )

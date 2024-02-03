@@ -5,6 +5,9 @@
 #include "app/ui/base/fragment.h"
 
 #include "app/ui/views/MovieView.h"
+#include "app/ui/views/DatabaseView.h"
+#include "app/ui/views/LoggerView.h"
+
 
 namespace UI
 {
@@ -17,6 +20,10 @@ namespace UI
             | ImGuiWindowFlags_NoBringToFrontOnFocus
             | ImGuiWindowFlags_NoMove
         ;
+
+        ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+        
+        
         ImVec2 margins = {0.0f, 0.0f};
 
         MainWindow();
@@ -27,6 +34,8 @@ namespace UI
         void onDraw() override;
     private:
         Views::MovieView movie_view;
+        Views::DatabaseView db_view;
+        Views::LoggerView logger_view;
 
 
     };

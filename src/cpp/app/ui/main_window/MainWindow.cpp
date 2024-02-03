@@ -17,10 +17,15 @@ namespace UI {
 
     void MainWindow::onBackground() {
         movie_view.onBackground();
+        db_view.onBackground();
+        logger_view.onBackground();
     }
     bool MainWindow::onEvent(SDL_Event* event) {
         
-        return movie_view.onEvent(event);
+        return movie_view.onEvent(event)
+            || db_view.onEvent(event)
+            || logger_view.onEvent(event)
+        ;
     }
 
     void MainWindow::onDraw() {
@@ -33,7 +38,25 @@ namespace UI {
         ImGui::SetNextWindowSize(window_dimens);
         ImGui::Begin("primary_menu_window", NULL, flags);
 
-        movie_view.onDraw();
+        if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags)) {
+            if (ImGui::BeginTabItem("Movies"))
+            {
+                movie_view.onDraw();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Database"))
+            {
+                db_view.onDraw();
+                ImGui::EndTabItem();
+            }
+                if (ImGui::BeginTabItem("Log"))
+            {
+                logger_view.onDraw();
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+        }
+        
 
         ImGui::End();
     }
