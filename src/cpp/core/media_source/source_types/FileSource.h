@@ -34,8 +34,7 @@ class FileSource : public SourceBase {
     void scanDirectoryForMovies(std::stop_token stoken,
                                 std::string src_name,
                                 fs::path dir,
-                                Scripting::ScriptTypes::MovieParserScript* parser,
-                                Scripting::ScriptTypes::MovieScraperScript* scraper);
+                                std::list<fs::path>* p_selected_files);
     void scanDirectoryForTvShows(std::stop_token stoken,
                                  std::string src_name,
                                  fs::path dir,

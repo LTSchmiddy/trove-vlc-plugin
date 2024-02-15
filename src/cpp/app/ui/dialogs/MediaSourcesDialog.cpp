@@ -44,6 +44,7 @@ void MediaSourcesDialog::drawLocations() {
         if (it.second->isScanRunning()) {
             ImGui::Text("Cannot update media source '%s' while scan is running...", it.first.c_str());
             ImGui::ProgressBar(it.second->get_scanProgress());
+            ImGui::Text("Scanning file '%s'", it.second->get_currentScanPath().c_str());
             if (ImGui::Button("Stop Scan##stop_scan")) {
                 it.second->stopScanThread(); 
             }

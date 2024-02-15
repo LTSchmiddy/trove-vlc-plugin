@@ -25,24 +25,76 @@ void FileSource::scanForMovies(std::stop_token stoken,
                                std::string src_name,
                                Scripting::ScriptTypes::MovieParserScript* parser,
                                Scripting::ScriptTypes::MovieScraperScript* scraper) {
-    scanDirectoryForMovies(stoken, src_name, fs::path(get_rootPath()), parser, scraper);
-}
+    // First, we need to find all of the movie files to process.
+    std::list<fs::path> selected_files;    
 
-void FileSource::scanForTvShows(std::stop_token stoken,
-                                std::string src_name,
-                                Scripting::ScriptTypes::TvShowParserScript* parser,
-                                Scripting::ScriptTypes::TvShowScraperScript* scraper) {
-    scanDirectoryForTvShows(stoken, src_name, fs::path(get_rootPath()), parser, scraper);
+    scanDirectoryForMovies(stoken, src_name, fs::path(get_rootPath()), &selected_files);
+
+    // Now, we begin scraping for metadata:
+    int progress = 0;
+    PLOG_DEBUG.printf("Found: %i files", selected_files.size());
+    for (std::list<fs::path>::iterator it = selected_files.begin(); it != selected_files.end(); ++it) {
+        fs::path rel_path = *it;
+
+        // Updating scraping progress:
+        {
+            std::lock_guard lock(progressGuard);
+            _scanProgress = (float)progress / (float)selected_files.size();
+            _currentScanPath = rel_path.string();
+
+            PLOG_DEBUG.printf("Progress: %f, Scraping '%s'", _scanProgress, _currentScanPath.c_str());
+        }
+        Library::Containers::MovieContainer new_movie = Library::Containers::MovieContainer(src_name, rel_path.string(), false);
+
+        // Check for a stop again before we do any db access:
+        if (stoken.stop_requested()) {
+            break;
+        }
+
+        // This will enable us to skip movies we've already scanned
+        if (!new_movie.existsInDb()) {
+            std::string search_params = parser->parsePath(rel_path.parent_path().string(), rel_path.filename().string());
+
+            // Check for a stop again after scraping (expecially since scraping requires internet access and can be time consuming):
+            if (stoken.stop_requested()) {
+                break;
+            }
+            std::string query_results_str;
+            scraper->basicSearch(search_params, &query_results_str);
+
+            PLOGV << query_results_str;
+            json query_results_json = json::parse(query_results_str);
+
+            if (query_results_json.contains("title"))
+                new_movie.title = query_results_json["title"].get<std::string>();
+            if (query_results_json.contains("date"))
+                new_movie.date = query_results_json["date"].get<std::string>();
+            if (query_results_json.contains("desc"))
+                new_movie.desc = query_results_json["desc"].get<std::string>();
+            if (query_results_json.contains("poster_path"))
+                new_movie.poster_path = query_results_json["poster_path"].get<std::string>();
+
+            new_movie.writeToDb();
+            
+        }
+        // Increase scraping progress:
+        progress++;
+    }
+
+    // Clearing the scan progress:
+    {
+        std::lock_guard lock(progressGuard);
+        _scanProgress = 0;
+        _currentScanPath = "";
+    }
 }
 
 void FileSource::scanDirectoryForMovies(std::stop_token stoken,
                                         std::string src_name,
                                         fs::path dir,
-                                        Scripting::ScriptTypes::MovieParserScript* parser,
-                                        Scripting::ScriptTypes::MovieScraperScript* scraper) {
+                                        std::list<fs::path>* p_selected_files) {
     
-    // First, we need to find all of the movie files to process.
-    std::list<fs::path> selected_files;                                        
+                                    
     // Iterate source directory:
     for (const fs::directory_entry& entry : fs::directory_iterator(dir)) {
         // We'll need re-check the stop token at multiple points, since some checks can take a while:
@@ -53,7 +105,7 @@ void FileSource::scanDirectoryForMovies(std::stop_token stoken,
 
         if (entry.is_directory()) {
             PLOGV.printf("Scanning Directory %s", entry.path().string().c_str());
-            scanDirectoryForMovies(stoken, src_name, entry, parser, scraper);
+            scanDirectoryForMovies(stoken, src_name, entry, p_selected_files);
 
             // If the stop was called in a recursive call, return from here:
             if (stoken.stop_requested()) {
@@ -72,68 +124,16 @@ void FileSource::scanDirectoryForMovies(std::stop_token stoken,
 
             // We're still operating on relative paths:
             fs::path rel_path = fs::relative(entry.path(), get_rootPath());
-            selected_files.push_back(rel_path);
+            p_selected_files->push_back(rel_path);
         }
     }
+}
 
-    int progress = 0;
-    PLOG_DEBUG.printf("Found: %i files", selected_files.size());
-    // Now, we begin scraping for metadata:
-    for (std::list<fs::path>::iterator it = selected_files.begin(); it != selected_files.end(); ++it) {
-        fs::path rel_path = *it;
-
-        // Updating scraping progress:
-        {
-            std::lock_guard lock(progressGuard);
-            _scanProgress = (float)progress / (float)selected_files.size();
-            _currentScanPath = rel_path.string();
-
-            PLOG_DEBUG.printf("Progress: %d", _scanProgress);
-        }
-        Library::Containers::MovieContainer new_movie = Library::Containers::MovieContainer(src_name, rel_path.string(), false);
-
-        // Check for a stop again before we do any db access:
-        if (stoken.stop_requested()) {
-            return;
-        }
-
-        // This will enable us to skip movies we've already scanned
-        if (!new_movie.existsInDb()) {
-            std::string search_params = parser->parsePath(rel_path.parent_path().string(), rel_path.filename().string());
-
-            // Check for a stop again after scraping (expecially since scraping requires internet access and can be time consuming):
-            if (stoken.stop_requested()) {
-                return;
-            }
-            std::string query_results_str;
-            scraper->basicSearch(search_params, &query_results_str);
-
-            PLOGD << query_results_str;
-            json query_results_json = json::parse(query_results_str);
-
-            if (query_results_json.contains("title"))
-                new_movie.title = query_results_json["title"].get<std::string>();
-            if (query_results_json.contains("date"))
-                new_movie.date = query_results_json["date"].get<std::string>();
-            if (query_results_json.contains("desc"))
-                new_movie.desc = query_results_json["desc"].get<std::string>();
-            if (query_results_json.contains("poster_path"))
-                new_movie.poster_path = query_results_json["poster_path"].get<std::string>();
-
-            new_movie.writeToDb();
-            
-            // Increase scraping progress:
-
-        }
-        progress++;
-    }
-
-    // Clearing the scan progress:
-    {
-        std::lock_guard lock(progressGuard);
-        _scanProgress = 0;
-        _currentScanPath = "";
-    }
+void FileSource::scanForTvShows(std::stop_token stoken,
+                                std::string src_name,
+                                Scripting::ScriptTypes::TvShowParserScript* parser,
+                                Scripting::ScriptTypes::TvShowScraperScript* scraper) {
+    scanDirectoryForTvShows(stoken, src_name, fs::path(get_rootPath()), parser, scraper);
 }
 
 void FileSource::scanDirectoryForTvShows(std::stop_token stoken,
